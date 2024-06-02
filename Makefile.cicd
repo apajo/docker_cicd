@@ -1,0 +1,25 @@
+.PHONY: install build test save load
+.DEFAULT_GOAL := install
+# SHELL := /bin/bash
+
+# Default targets
+all: install build
+
+help:           ## Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
+
+install:           ## Install script
+	docker compose --profile=build build
+
+build:           ## Build script
+	docker compose build
+
+test:           ## Test script
+	docker compose --profile=test run --build --remove-orphans --rm test
+
+push:           ## Push script
+	docker compose push
+
+deploy:           ## Pull/run script
+	docker compose pull
+	docker compose up
