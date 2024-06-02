@@ -1,4 +1,4 @@
-.PHONY: install build test save load
+.PHONY: install build test push deploy help
 .DEFAULT_GOAL := install
 # SHELL := /bin/bash
 
