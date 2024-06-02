@@ -1,0 +1,80 @@
+services:
+  staging:
+    build:
+      context: ../
+      dockerfile: .docker/host/Dockerfile
+    extends:
+      file: compose.common.yml
+      service: host_base
+    container_name: staging
+    hostname: staging
+    links:
+      - registry
+    depends_on:
+      - registry
+    ports:
+      - "1251:22"
+    profiles: ["", staging]
+    networks:
+      - registry_net
+      - staging_net
+    healthcheck:
+      test: nc -z localhost 22 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  production:
+    build:
+      context: ../
+      dockerfile: .docker/prod/Dockerfile
+    extends:
+      file: compose.common.yml
+      service: host_base
+    container_name: production
+    hostname: production
+    ports:
+      - "1250:22"
+    profiles: [prod]
+    networks:
+      - staging_net
+    healthcheck:
+      test: nc -z localhost 22 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  registry:
+    build:
+      context: ./registry/
+      dockerfile: ./Dockerfile
+    extends:
+      file: compose.common.yml
+      service: config
+    container_name: staging_registry
+    hostname: "registry"
+    restart: always
+    profiles: ["", staging]
+    networks:
+      - registry_net
+    healthcheck:
+      test: nc -z localhost 5000 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  docker_dind_vol:
+  certs:
+  user_ssh:
+  ssh_config:
+  backups_vol:
+
+networks:
+  registry_net:
+    driver: bridge
+  staging_net:
+    driver: bridge

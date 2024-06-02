@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# Description: This script is intended for pushing or deploying a specified version of the project.
+#              It checks for the required version name argument, sets up necessary environment variables,
+#              and performs deployment operations.
+# Usage: ./deploy.sh <branch> <build_name>
+#        <branch> name of the branch to be checked out
+#        <build_name> is the name of the build/tag to be deployed
+
+export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+source $SCRIPTPATH/.common
+
+run_subcommand() {
+    "$@" 2>&1 | sed 's/^/>>    /'
+}
+
+# Exit on missing argument
+if [ -z "$1" ]; then
+    echo -e "${RED}Error: Branch name is missing!${NC}"
+    exit 1
+fi
+
+# Exit on missing argument
+if [ -z "$2" ]; then
+    echo -e "${RED}Error: Build name is missing!${NC}"
+    exit 1
+fi
+
+# ENVIRONEMTN VARS
+export ROOT="$(pwd)"
+[ ! -f $ROOT/.env ] || set -o allexport; source $ROOT/.env; set +o allexport;
+[ ! -f $ROOT/.env.local ] || set -o allexport; source $ROOT/.env.local; set +o allexport;
+
+. /etc/profile
+
+BUILD_ROOT=/app/build;
+BRANCH=$1;
+BUILD_VERSION=$2;
+export VERSION=$BRANCH\_$BUILD_VERSION
+BUILD_DIR=$BUILD_ROOT/$VERSION;
+MAKEFILE=${MAKE_FILE:-Makefile.cicd}
+
+echo -e "\n${BOLD_WHITE}"
+echo "Makefile: "$MAKEFILE
+echo "Branch name: "$BRANCH
+echo "Build name: "$BUILD_VERSION
+echo "Build directory: "$BUILD_DIR
+echo -e "\n${NC}"
+
+# Remove build dir (if exists from previous failed run)
+[ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :;
+
+echo -e "Cloning ${BOLD_WHITE}$GIT_REPO${NC} ... ";
+git clone $GIT_REPO --branch="$BRANCH" "$BUILD_DIR"
+
+if [ ! -d "$BUILD_DIR" ]; then
+    echo -e "${BOLD_WHITE}Error: Directory $BUILD_DIR does not exist.${NC}"
+    exit 1
+fi
+
+function cleanup()
+{
+  echo "Clean up build dir ($VERSION)..."
+  [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :;
+
+  if [ "$(docker image ls | grep "localhost:5000")" ]; then
+    echo "Clean up images..."
+    docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f;
+  fi
+
+}
+
+trap cleanup EXIT
+
+cd $BUILD_DIR || exit;
+
+if [ ! -f "$MAKEFILE" ]; then
+    echo -e "${RED}Makefile not found: $MAKEFILE (in: $BUILD_DIR)${NC}"
+    exit 1
+fi
+
+echo -e "\n${GREEN}Ready! Build directory ($BUILD_DIR) created ...${NC}\n"
+
+echo "Installing ($VERSION) ..."
+make -f ${MAKEFILE} install VERSION=$VERSION
+
+echo "Build containers ($VERSION) ..."
+make -f ${MAKE_FILE} build VERSION=$VERSION
+
+echo "Running test ($VERSION) ..."
+make -f ${MAKE_FILE} test VERSION=$VERSION
+
+echo "Pushing/saving containers ($VERSION) ..."
+make -f ${MAKE_FILE} push VERSION=$VERSION
+
+echo -e "\n${GREEN}Finished! Cleaning up and exiting ...${NC}\n"

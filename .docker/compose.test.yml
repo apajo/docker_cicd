@@ -1,0 +1,37 @@
+services:
+  test:
+    build:
+      context: ./../
+      dockerfile: .docker/test/Dockerfile
+      args:
+        - SSH_PASSWORD=KollaneHobune
+    extends:
+      file: compose.common.yml
+      service: config
+    container_name: staging_test
+    hostname: test
+    env_file: !override [../.env.test]
+    links:
+      - staging
+      - production
+    depends_on:
+      - staging
+      - production
+    profiles: [test]
+    networks:
+      - staging_net
+
+  staging:
+    build:
+      args:
+        - SSH_PASSWORD=KollaneHobune
+    env_file: !override [../.env.test]
+    profiles: [test]
+
+  registry:
+    env_file: !override [../.env.test]
+    profiles: [test]
+
+  production:
+    env_file: !override [../.env.test]
+    profiles: [test]

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+
+NC='\033[0m'     # No color (resets text formatting)
+
+# Regular Colors
+BLACK='\033[0;30m'   # Black
+RED='\033[0;31m'     # Red
+GREEN='\033[0;32m'   # Green
+YELLOW='\033[0;33m'  # Yellow
+BLUE='\033[0;34m'    # Blue
+PURPLE='\033[0;35m'  # Purple
+CYAN='\033[0;36m'    # Cyan
+WHITE='\033[0;37m'   # White
+
+# Bold
+BOLD_BLACK='\033[1;30m'  # Black
+BOLD_RED='\033[1;31m'    # Red
+BOLD_GREEN='\033[1;32m'  # Green
+BOLD_YELLOW='\033[1;33m' # Yellow
+BOLD_BLUE='\033[1;34m'   # Blue
+BOLD_PURPLE='\033[1;35m' # Purple
+BOLD_CYAN='\033[1;36m'   # Cyan
+BOLD_WHITE='\033[1;37m'  # White
+
+
+export ROOT="$(pwd)"
+[ ! -f $ROOT/.env ] || set -o allexport; source $ROOT/.env; set +o allexport;
+[ ! -f $ROOT/.env.local ] || set -o allexport; source $ROOT/.env.local; set +o allexport;
+
+SSH_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT}"
+width=$(tput cols)
+
+width=$(tput cols)
+line=$(printf "%${width}s" | tr ' ' '=')
+
+echo -e "${YELLOW}\nExecuting command ($@) in server (${SSH_URL}) ...${NC}"
+echo -e "${YELLOW}=========================================================================${NC}\n"
+
+ssh ${SSH_URL} -C "source /etc/profile; $@";
+
+echo -e "${YELLOW}=========================================================================${NC}"
+echo -e "${YELLOW}End of ($@) in (${SSH_URL}) ...${NC}\n"
