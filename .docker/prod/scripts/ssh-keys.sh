@@ -19,12 +19,6 @@ fi
 
 echo "Setting up known hosts..."
 
-#ssh-keyscan -p ${STAGING_PORT} ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts
-#ssh-keyscan -p ${PRODUCTION_PORT} ${PRODUCTION_HOST} >> /home/cicd/.ssh/known_hosts
-#ssh-keyscan bitbucket.org >> /home/cicd/.ssh/known_hosts;
-#ssh-keyscan github.com >> /home/cicd/.ssh/known_hosts;
-
-ssh-keyscan -p ${STAGING_PORT} ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts
 ssh-keyscan $(extract_host $GIT_REPO) >> /home/cicd/.ssh/known_hosts;
 
 echo "Setting up authorized keys..."

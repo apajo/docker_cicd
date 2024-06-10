@@ -74,23 +74,30 @@ trap cleanup EXIT
 
 cd $BUILD_DIR || exit;
 
-if [ ! -f "$MAKEFILE" ]; then
-    echo -e "${RED}Makefile not found: $MAKEFILE (in: $BUILD_DIR)${NC}"
-    exit 1
-fi
-
 echo -e "\n${GREEN}Ready! Build directory ($BUILD_DIR) created ...${NC}\n"
 
-echo "Installing ($VERSION) ..."
-make -f ${MAKEFILE} install VERSION=$VERSION
+if [ -f "$MAKEFILE" ]; then
+  echo -e "\n${GREEN}Found Makefile! Using it ... ${NC}\n"
 
-echo "Build containers ($VERSION) ..."
-make -f ${MAKE_FILE} build VERSION=$VERSION
+  echo "Installing ($VERSION) ..."
+  make -f ${MAKEFILE} install VERSION=$VERSION
 
-echo "Running test ($VERSION) ..."
-make -f ${MAKE_FILE} test VERSION=$VERSION
+  echo "Build containers ($VERSION) ..."
+  make -f ${MAKE_FILE} build VERSION=$VERSION
 
-echo "Pushing/saving containers ($VERSION) ..."
-make -f ${MAKE_FILE} push VERSION=$VERSION
+  echo "Running test ($VERSION) ..."
+  make -f ${MAKE_FILE} test VERSION=$VERSION
+
+  echo "Pushing/saving containers ($VERSION) ..."
+  make -f ${MAKE_FILE} push VERSION=$VERSION
+elif [ -f "compose.yml" ]; then
+  echo -e "\n${GREEN}No Makefile found! Using it directly docker compose ...${NC}\n"
+  echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
+
+  docker compose --profile=install build
+  docker compose build
+  docker compose --profile=test run app
+  docker compose push
+fi
 
 echo -e "\n${GREEN}Finished! Cleaning up and exiting ...${NC}\n"

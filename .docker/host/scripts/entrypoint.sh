@@ -6,7 +6,7 @@ addgroup cicd docker
 
 chmod 666 /var/run/docker.sock;
 
-env | grep _ >> /etc/environment
+env | grep _ | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /etc/environment
 chmod +x /etc/environment
 
 grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment  | xargs)' /etc/profile || echo '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment  | xargs)' >> /etc/profile
