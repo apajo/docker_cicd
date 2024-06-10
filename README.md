@@ -27,7 +27,7 @@ Components:
 
 * Pushing - pushing code to the repository
 * Git repository - any source code repository
-* Staging server - server for testing, building and dockder image storage
+* Staging server - server for testing, building and docker image storage
 * Host server - application host/server
 
 ## Getting started
@@ -39,8 +39,6 @@ git clone https://github.com/apajo/docker_cicd.git
 ```
 
 ### Setup
-
-#### .env
 
 Create `.env.local` to override `.env` parameters.
 
@@ -57,12 +55,7 @@ Create `.env.local` to override `.env` parameters.
 
 _Additionally, you can create `compose.override.yml` to override `compose.yml` parameters. For more info taht, checkout [here](https://docs.docker.com/compose/)_
 
-### Overview
-
-This package consists of 3 different docker profiles/environments:
-* staging
-* host
-* test
+> __NB!__ Make sure tou have setup your __Makefile.cicd__ file in your git repository.
 
 ### Git repo requirements
 
