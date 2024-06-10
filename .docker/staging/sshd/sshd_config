@@ -105,7 +105,7 @@ PermitTunnel yes
 #VersionAddendum none
 
 # no default banner path
-#Banner none
+Banner /etc/ssh/banner
 
 # override default of no subsystems
 # Subsystem	sftp	internal-sftp

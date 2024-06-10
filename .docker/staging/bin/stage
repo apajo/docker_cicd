@@ -8,10 +8,12 @@
 #        <build_name> is the name of the build/tag to be deployed
 
 export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-source $SCRIPTPATH/.common
 
-run_subcommand() {
-    "$@" 2>&1 | sed 's/^/>>    /'
+cleanup_ssh() {
+    if [ -n "$SSH_PID" ]; then
+        echo "Killing SSH tunnel with PID $SSH_PID"
+        kill ${SSH_PID}
+    fi
 }
 
 # Exit on missing argument
@@ -39,6 +41,8 @@ BUILD_VERSION=$2;
 export VERSION=$BRANCH\_$BUILD_VERSION
 BUILD_DIR=$BUILD_ROOT/$VERSION;
 MAKEFILE=${MAKE_FILE:-Makefile.cicd}
+STAGING_URL="${STAGING_USER}@staging"
+SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
 echo -e "\n${BOLD_WHITE}"
 echo "Makefile: "$MAKEFILE
@@ -51,7 +55,7 @@ echo -e "\n${NC}"
 [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :;
 
 echo -e "Cloning ${BOLD_WHITE}$GIT_REPO${NC} ... ";
-git clone $GIT_REPO --branch="$BRANCH" "$BUILD_DIR"
+git clone --depth=1 $GIT_REPO --branch="$BRANCH" "$BUILD_DIR"
 
 if [ ! -d "$BUILD_DIR" ]; then
     echo -e "${BOLD_WHITE}Error: Directory $BUILD_DIR does not exist.${NC}"
@@ -76,27 +80,53 @@ cd $BUILD_DIR || exit;
 
 echo -e "\n${GREEN}Ready! Build directory ($BUILD_DIR) created ...${NC}\n"
 
+ssh-keyscan staging >> /home/cicd/.ssh/known_hosts;
+
+# As long as the SSH tunnel isnt working:
+docker run -d -p 5000:5000 --name local-registry registry:2
+
+# echo -e "\n${GREEN}Creating registry tunnel ...${NC}\n"
+# echo "ssh $SSH_TUNNEL -N -f"
+
+# ssh $SSH_TUNNEL -N -f
+# if [ ! $? -eq 0 ]; then
+#   echo -e "${RED}Failed to create SSH tunnel.${NC}"
+#   exit 1
+# fi
+
+# SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
+
+
+# tail -f /dev/null
+
 if [ -f "$MAKEFILE" ]; then
   echo -e "\n${GREEN}Found Makefile! Using it ... ${NC}\n"
 
-  echo "Installing ($VERSION) ..."
-  make -f ${MAKEFILE} install VERSION=$VERSION
+  echo "Installing ($BUILD_VERSION@$BRANCH) ..."
+  make -f ${MAKEFILE} install VERSION=$BUILD_VERSION
 
-  echo "Build containers ($VERSION) ..."
-  make -f ${MAKE_FILE} build VERSION=$VERSION
+  echo "Build containers ($BUILD_VERSION@$BRANCH) ..."
+  make -f ${MAKEFILE} build VERSION=$BUILD_VERSION
 
-  echo "Running test ($VERSION) ..."
-  make -f ${MAKE_FILE} test VERSION=$VERSION
+  # echo "Running test ($BUILD_VERSION@$BRANCH) ..."
+  # make -f ${MAKEFILE} test VERSION=$BUILD_VERSION
 
-  echo "Pushing/saving containers ($VERSION) ..."
-  make -f ${MAKE_FILE} push VERSION=$VERSION
-elif [ -f "compose.yml" ]; then
+  trap cleanup_ssh EXIT
+
+  SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
+
+  echo "Pushing/saving containers ($BUILD_VERSION@$BRANCH) ..."
+  make -f ${MAKEFILE} push VERSION=$BUILD_VERSION
+
+else
   echo -e "\n${GREEN}No Makefile found! Using it directly docker compose ...${NC}\n"
   echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
 
+  export VERSION=$BUILD_VERSION;
+
   docker compose --profile=install build
   docker compose build
-  docker compose --profile=test run app
+  # docker compose --profile=test run app
   docker compose push
 fi
 

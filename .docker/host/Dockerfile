@@ -39,6 +39,7 @@ RUN ssh-keyscan bitbucket.org >> /home/cicd/.ssh/known_hosts \
     ssh-keyscan github.com >> /home/cicd/.ssh/known_hosts
 
 COPY .docker/staging/sshd/ /etc/ssh/
+COPY .docker/host/sshd/ /etc/ssh/
 
 RUN touch /var/log/btmp
 

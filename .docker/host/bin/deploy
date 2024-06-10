@@ -8,7 +8,6 @@
 #        <build_name> is the name of the build/tag to be deployed
 
 export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-source $SCRIPTPATH/.common
 
 run_subcommand() {
     "$@" 2>&1 | sed 's/^/>>    /'
