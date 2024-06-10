@@ -1,0 +1,8 @@
+Host server.
+
+Paths:
+/app
+
+
+Binaries:
+deploy [version]

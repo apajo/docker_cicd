@@ -39,7 +39,7 @@ RUN ssh-keyscan bitbucket.org >> /home/cicd/.ssh/known_hosts \
     ssh-keyscan github.com >> /home/cicd/.ssh/known_hosts
 
 COPY .docker/staging/sshd/ /etc/ssh/
-COPY .docker/host/sshd/ /etc/ssh/
+COPY .docker/staging/sshd/banner/host /etc/ssh/banner
 
 RUN touch /var/log/btmp
 
@@ -57,7 +57,7 @@ USER root
 WORKDIR /app
 
 # Staging specific scripts
-COPY --chmod=a-w+x --chown=cicd:cicd .docker/host/bin/ /home/cicd/bin
+COPY --chmod=a-w+x --chown=cicd:cicd .docker/host/bin/ /usr/local/bin/
 COPY --chmod=+x --chown=cicd:cicd .docker/host/scripts/* /usr/bin/
 
 ENTRYPOINT ["/usr/bin/host-entrypoint.sh"]

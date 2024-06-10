@@ -1,0 +1,8 @@
+Staging server.
+
+Paths:
+/app/build
+/var/backups/digicmr
+
+Binaries:
+stage [branch] [version]

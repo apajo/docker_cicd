@@ -36,6 +36,7 @@ COPY --chmod=a-w+x --chown=cicd:cicd bin/ /usr/local/bin
 COPY --chmod=+x .docker/staging/scripts/* /usr/bin/
 
 COPY .docker/staging/sshd/ /etc/ssh/
+COPY .docker/staging/sshd/banner/staging /etc/ssh/banner
 
 RUN touch /var/log/btmp
 
