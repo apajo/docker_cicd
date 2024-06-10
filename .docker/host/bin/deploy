@@ -14,7 +14,7 @@ run_subcommand() {
 }
 
 # Exit on missing argument
-if [ -z "$2" ]; then
+if [ -z "$1" ]; then
     echo -e "${RED}Error: Build name is missing!${NC}"
     exit 1
 fi
