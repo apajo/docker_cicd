@@ -4,6 +4,8 @@ This package provides a simple CI/CD pipeline for deploying applications using D
 It tests/builds your project and stores the docker images in a staging server.
 After that, from a host environment you can run the images.
 
+The package requires a single `Makefile.cicd` file in the root of your project to do it's job.
+
 ## Prerequisites
 
 - [GIT 2.34.1](https://git-scm.com/)
