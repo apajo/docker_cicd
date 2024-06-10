@@ -9,7 +9,6 @@ extract_host() {
     fi
 }
 
-
 if [ ! -f /home/cicd/.ssh/id_rsa ]; then
   echo "Generating public key..."
 
@@ -20,7 +19,6 @@ fi
 
 echo "Setting up known hosts..."
 
-echo "Adding GIT repository host: $(extract_host $GIT_REPO) ..."
 ssh-keyscan $(extract_host $GIT_REPO) >> /home/cicd/.ssh/known_hosts;
 
 echo "Setting up authorized keys..."

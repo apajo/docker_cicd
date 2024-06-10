@@ -2,7 +2,7 @@ services:
   staging:
     build:
       context: ../
-      dockerfile: .docker/host/Dockerfile
+      dockerfile: .docker/staging/Dockerfile
     extends:
       file: compose.common.yml
       service: host_base
@@ -25,18 +25,18 @@ services:
       retries: 3
       start_period: 10s
 
-  production:
+  host:
     build:
       context: ../
-      dockerfile: .docker/prod/Dockerfile
+      dockerfile: .docker/host/Dockerfile
     extends:
       file: compose.common.yml
       service: host_base
-    container_name: production
-    hostname: production
+    container_name: host
+    hostname: host
     ports:
       - "1250:22"
-    profiles: [prod]
+    profiles: [host]
     networks:
       - staging_net
     healthcheck:

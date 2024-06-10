@@ -33,12 +33,9 @@ RUN passwd -u cicd; \
 
 RUN mkdir -p /home/cicd/bin
 COPY --chmod=a-w+x --chown=cicd:cicd bin/ /usr/local/bin
-COPY --chmod=+x .docker/host/scripts/* /usr/bin/
+COPY --chmod=+x .docker/staging/scripts/* /usr/bin/
 
-RUN ssh-keyscan bitbucket.org >> /home/cicd/.ssh/known_hosts \
-    ssh-keyscan github.com >> /home/cicd/.ssh/known_hosts
-
-COPY .docker/host/sshd/ /etc/ssh/
+COPY .docker/staging/sshd/ /etc/ssh/
 
 RUN touch /var/log/btmp
 
@@ -47,18 +44,24 @@ RUN if [ -n "${SSH_PASSWORD}" ]; then echo "cicd:${SSH_PASSWORD}" | chpasswd; fi
 # Staging build step
 FROM dind-ssh
 
+ARG SSH_PASSWORD
+ENV SSH_PASSWORD=${SSH_PASSWORD}
 
-RUN mkdir -p /app
-RUN chown -R cicd:cicd /app
+WORKDIR /home/cicd
 
-USER root
+# Create backup and build dirs
+RUN mkdir -p /app/build; \
+    mkdir -p /var/backups/digicmr; \
+    chown -R cicd:cicd /app; \
+    chown -R cicd:cicd /var/backups/digicmr;
 
-WORKDIR /app
+# Create dir links to $HOME
+RUN ln -s /app/build /home/cicd/build; \
+    ln -s /var/backups/digicmr /home/cicd/backups;
 
 # Staging specific scripts
-COPY --chmod=a-w+x --chown=cicd:cicd .docker/prod/bin/ /home/cicd/bin
-COPY --chmod=+x --chown=cicd:cicd .docker/prod/scripts/* /usr/bin/
+COPY --chmod=a-w+x --chown=cicd:cicd .docker/staging/bin/ /usr/local/bin
 
-ENTRYPOINT ["/usr/bin/prod-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 
 CMD ["dockerd-entrypoint.sh"]

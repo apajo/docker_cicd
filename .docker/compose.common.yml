@@ -17,7 +17,7 @@ services:
   host_base:
     build:
       context: ../
-      dockerfile: .docker/host/Dockerfile
+      dockerfile: .docker/staging/Dockerfile
     extends:
       file: compose.common.yml
       service: config

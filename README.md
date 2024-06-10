@@ -1,5 +1,8 @@
-# Docker CI/CD
+# 🐳 Docker CI/CD
 
+This package provides a simple CI/CD pipeline for deploying applications using Docker.
+It tests/builds your project and stores the docker images in a staging server.
+After that, from a host environment you can run the images.
 
 ## Prerequisites
 
@@ -11,7 +14,7 @@
 
 This package consists of 3 different docker profiles/environments:
 * `staging` - for testing, building and image storage
-* `production` - for host/production environment
+* `host` - for host environment
 * `test` - for testing this package
 
 ### Flow diagram / components
@@ -23,7 +26,7 @@ Components:
 * Pushing - pushing code to the repository
 * Git repository - any source code repository
 * Staging server - server for testing, building and dockder image storage
-* Production server - application host/server
+* Host server - application host/server
 
 ## Getting started
 
@@ -43,26 +46,58 @@ Create `.env.local` to override `.env` parameters.
 | Variable           | Description                                   | Default value                              |
 |--------------------|-----------------------------------------------|--------------------------------------------|
 | `GIT_REPO`         | URL of you Git repository                     | `https://github.com/apajo/docker_cicd.git` |
-| `PUBLIC_KEY`       | Authorized key for staging/production servers |                                            |
+| `PUBLIC_KEY`       | Authorized key for staging/host servers |                                            |
 | `MAKE_FILE`        | Path/name of your CI/CD make file             | `Makefile.cicd`                            |
 | `STAGING_HOST`     | Host for the staging environment              | `staging`                                  |
 | `STAGING_PORT`     | Port for the staging environment              | `22`                                       |
 | `STAGING_USER`     | User for the staging environment              | `cicd`                                     |
 
+
 _Additionally, you can create `compose.override.yml` to override `compose.yml` parameters. For more info taht, checkout [here](https://docs.docker.com/compose/)_
 
 ### Overview
 
-__Profile__ can be one of: __staging / prod / test__
+This package consists of 3 different docker profiles/environments:
+* staging
+* host
+* test
+
+### Git repo requirements
+
+__NB!__ Your git repository root directory has to have a
+__Makefile.cicd__ file with the following targets:
+* install
+* build
+* test
+* push
+* deploy
+* help
+
+
+Example __Makefile.cicd__:
 
 ```shell
-docker compose --profile=[profile] up -d
-```
+.PHONY: install build test push deploy help
+.DEFAULT_GOAL := install
 
-### Stop
+help:           ## Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-```shell
-docker compose --profile=[profile] down
+install:           ## Install (aka. prebuild) the containers
+	docker compose --profile=build build
+
+build:           ## Build the containers
+	docker compose build
+
+test:           ## Run tests in the containers
+	docker compose --profile=test run --build --remove-orphans --rm test
+
+push:           ## Push the built image
+	docker compose push
+
+deploy:           ## Deploy docker image
+	docker compose pull
+	docker compose up
 ```
 
 ### Run staging server
@@ -75,16 +110,19 @@ docker compose --profile=[profile] down
 docker compose --profile=staging up -d
 ```
 
-### Run production/host server
+### Run host server
 
 1. Clone this repo (https://github.com/apajo/docker_cicd)
 2. Edit environment variables by creating `.env.local` file
-3. Setup your public keys in staging and production servers
+3. Setup your public keys in staging and host containers
 4. Run:
 
 ```shell
-docker compose --profile=prod up -d
+docker compose --profile=host up -d
 ```
+
+__Note!__ You can setup ad many hosts as needed (test, prelive, production, etc.) 
+
 ### Run in pipeline
 
 If environments are setup you can run the following commands to deploy the application
@@ -119,7 +157,7 @@ docker exec -it --user cicd staging bash -c "cat ~/.ssh/id_rsa.pub"
 
 ```shell
 PUBLIC_KEY=$(cat $HOME/.ssh/id_rsa.pub); \
-docker exec -it --user cicd production bash -c "echo $PUBLIC_KEY >> ~/.ssh/authorized_keys"
+docker exec -it --user cicd host bash -c "echo $PUBLIC_KEY >> ~/.ssh/authorized_keys"
 ```
 
 #### Add a domain to known hosts

@@ -1,4 +1,3 @@
 include:
   - path :
       - .docker/compose.yml
-#      - .docker/compose.test.yml
