@@ -9,8 +9,11 @@
 
 export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-run_subcommand() {
-    "$@" 2>&1 | sed 's/^/>>    /'
+cleanup_ssh() {
+    if [ -n "$SSH_PID" ]; then
+        echo "Killing SSH tunnel with PID $SSH_PID"
+        kill ${SSH_PID}
+    fi
 }
 
 # Exit on missing argument
@@ -30,9 +33,14 @@ APP_ROOT=/app;
 BRANCH=$1;
 VERSION=$2;
 MAKEFILE=${MAKE_FILE:-Makefile.cicd}
+STAGING_URL="${STAGING_USER}@staging"
+SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
+
 
 echo "Cloning ($GIT_REPO) ..."
 git clone ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
+
+cd ${APP_ROOT} || exit;
 git fetch --all  && git upll --all;
 
 function cleanup()
@@ -44,14 +52,25 @@ function cleanup()
 
 }
 
+trap cleanup_ssh EXIT
 trap cleanup EXIT
-
-cd ${APP_ROOT} || exit;
 
 if [ ! -f "$MAKEFILE" ]; then
     echo -e "${RED}Makefile not found: $MAKEFILE (in: $APP_ROOT)${NC}"
     exit 1
 fi
+
+
+echo -e "\n${GREEN}Creating staging tunnel ...${NC}\n"
+echo "ssh $SSH_TUNNEL -N -f"
+
+ssh $SSH_TUNNEL -N -f
+if [ ! $? -eq 0 ]; then
+ echo -e "${RED}Failed to create SSH tunnel.${NC}"
+ exit 1
+fi
+
+SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
 echo "Pulling/loading containers ($VERSION) ..."
 make -f ${MAKE_FILE:-Makefile.cicd} deploy VERSION=$VERSION

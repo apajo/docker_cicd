@@ -1,15 +1,23 @@
 #!/bin/bash
 
-echo "Production entrypoint..."
+echo "Host entrypoint..."
+
+addgroup cicd root;
+addgroup cicd rootless;
+addgroup cicd docker
 
 chmod 666 /var/run/docker.sock;
 
-/usr/bin/entrypoint.sh
+env | grep _ | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /etc/environment
+chmod +x /etc/environment
+
+grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment  | xargs)' /etc/profile || echo '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment  | xargs)' >> /etc/profile
+
 
 wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
 
 ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 
-echo -e "\nProduction is ready ... \n"
+echo -e "\Host is ready ... \n"
 
 exec "$@"
