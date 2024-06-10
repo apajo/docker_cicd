@@ -71,8 +71,6 @@ __Makefile.cicd__ file with the following targets:
 * test
 * push
 * deploy
-* help
-
 
 Example __Makefile.cicd__:
 
