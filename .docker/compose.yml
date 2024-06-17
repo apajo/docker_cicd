@@ -6,8 +6,11 @@ services:
     extends:
       file: compose.common.yml
       service: host_base
+#    command: ["--insecure-registry=registry:5000"]
     container_name: staging
     hostname: staging
+    environment:
+      - DOCKER_OPTS=--insecure-registry=registry:5000 --insecure-registry=localhost:5000
     links:
       - registry
     depends_on:
@@ -34,6 +37,8 @@ services:
       service: host_base
     container_name: host
     hostname: host
+    environment:
+      - DOCKER_OPTS=--insecure-registry=registry:5000 --insecure-registry=localhost:5000
     ports:
       - "1250:22"
     profiles: [host]
