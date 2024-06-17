@@ -2,13 +2,19 @@
 
 echo -e "\nReady to run the tests ... \n"
 
-# Generate a random number for the version variable
-version=$RANDOM
+# Loop that iterates 10 times
+for ((i=1; i<=10; i++))
+do
+  echo -e "\nRunning iteration $i/10 ... \n"
 
-echo "Testing / building ..."
+  # Generate a random number for the version variable
+  version=$RANDOM
 
-bin/ssh/staging stage test_repo $version;
+  echo "Testing / building ($version) ..."
 
-echo "Setting up built image ..."
+  bin/ssh/staging stage test_repo $version;
 
-bin/ssh/prod deploy test_repo $version;
+  echo "Setting up built image ($version) ..."
+
+  bin/ssh/prod deploy test_repo $version;
+done
