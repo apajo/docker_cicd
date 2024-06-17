@@ -108,8 +108,8 @@ if [ -f "$MAKEFILE" ]; then
   echo "Build containers ($BUILD_VERSION@$BRANCH) ..."
   make -f ${MAKEFILE} build VERSION=$BUILD_VERSION
 
-  # echo "Running test ($BUILD_VERSION@$BRANCH) ..."
-  # make -f ${MAKEFILE} test VERSION=$BUILD_VERSION
+  echo "Running test ($BUILD_VERSION@$BRANCH) ..."
+  make -f ${MAKEFILE} test VERSION=$BUILD_VERSION
 
   trap cleanup_ssh EXIT
 
