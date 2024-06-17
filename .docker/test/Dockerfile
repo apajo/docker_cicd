@@ -1,9 +1,8 @@
 FROM alpine:3.20.0
 
 ARG SSH_PASSWORD
-ENV SSH_PASSWORD=${SSH_PASSWORD}
 
-RUN apk add --update --no-cache net-tools busybox-extras nano tree openssh bash ncurses;
+RUN apk add --update --no-cache net-tools busybox-extras nano tree openssh bash ncurses sshpass;
 
 RUN adduser -g cicd -g rootless -D cicd;
 

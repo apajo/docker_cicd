@@ -1,5 +1,7 @@
 FROM docker:26.0.0-dind-rootless as dind-ssh
 
+ARG SSH_PASSWORD
+
 USER root
 
 RUN apk update --no-cache;
@@ -44,9 +46,6 @@ RUN if [ -n "${SSH_PASSWORD}" ]; then echo "cicd:${SSH_PASSWORD}" | chpasswd; fi
 
 # Staging build step
 FROM dind-ssh
-
-ARG SSH_PASSWORD
-ENV SSH_PASSWORD=${SSH_PASSWORD}
 
 WORKDIR /home/cicd
 

@@ -59,7 +59,7 @@ PubkeyAuthentication yes
 #IgnoreRhosts yes
 
 # To disable tunneled clear text passwords, change to no here!
-PasswordAuthentication no
+PasswordAuthentication yes
 PermitEmptyPasswords no
 
 # Change to no to disable s/key passwords
@@ -109,6 +109,8 @@ Banner /etc/ssh/banner
 
 # override default of no subsystems
 # Subsystem	sftp	internal-sftp
+
+UsePAM yes
 
 # Example of overriding settings on a per-user basis
 #Match User anoncvs

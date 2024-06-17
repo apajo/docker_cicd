@@ -26,6 +26,9 @@ ssh-keyscan $(extract_host $GIT_REPO) >> /home/cicd/.ssh/known_hosts;
 
 echo "Setting up authorized keys..."
 
+sshpass -p 'KollaneHobune' ssh-copy-id -p ${STAGING_PORT} ${STAGING_HOST}
+sshpass -p 'KollaneHobune' ssh-copy-id -p ${PRODUCTION_PORT} ${PRODUCTION_HOST}
+
 if [ -n "$PUBLIC_KEY" ]; then
   echo "$PUBLIC_KEY" >> /home/cicd/.ssh/authorized_keys
 fi

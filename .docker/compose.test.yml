@@ -13,10 +13,10 @@ services:
     env_file: !override [../.env.test]
     links:
       - staging
-      - production
+      - host:production
     depends_on:
       - staging
-      - production
+      - host
     profiles: [test]
     networks:
       - staging_net
@@ -32,6 +32,9 @@ services:
     env_file: !override [../.env.test]
     profiles: [test]
 
-  production:
+  host:
+    build:
+      args:
+        - SSH_PASSWORD=KollaneHobune
     env_file: !override [../.env.test]
     profiles: [test]
