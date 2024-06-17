@@ -22,20 +22,16 @@ BOLD_PURPLE='\033[1;35m' # Purple
 BOLD_CYAN='\033[1;36m'   # Cyan
 BOLD_WHITE='\033[1;37m'  # White
 
-
 export ROOT="$(pwd)"
-[ ! -f $ROOT/.env ] || set -o allexport; source $ROOT/.env; set +o allexport;
-[ ! -f $ROOT/.env.local ] || set -o allexport; source $ROOT/.env.local; set +o allexport;
+[ -f $ROOT/.env ] && (set -o allexport; source $ROOT/.env; set +o allexport);
+[ -f $ROOT/.env.local ] && (set -o allexport; source $ROOT/.env.local; set +o allexport);
 
-SSH_URL="${PRODUCTION_USER}@${PRODUCTION_HOST} -p ${PRODUCTION_PORT}"
-
-width=$(tput cols)
-line=$(printf "%${width}s" | tr ' ' '=')
+SSH_URL="${PRODUCTION_USER}@${PRODUCTION_HOST} -p ${PRODUCTION_PORT} -t"
 
 echo -e "${CYAN}\nExecuting command ($@) in server (${SSH_URL}) ...${NC}"
 echo -e "${CYAN}=========================================================================${NC}\n"
 
-ssh ${SSH_URL} -C "source /etc/profile; $@";
+ssh ${SSH_URL} -C "$@";
 
 echo -e "${CYAN}=========================================================================${NC}"
 echo -e "${CYAN}End of ($@) in (${SSH_URL}) ...${NC}\n"

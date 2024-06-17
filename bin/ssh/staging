@@ -25,19 +25,15 @@ BOLD_WHITE='\033[1;37m'  # White
 
 
 export ROOT="$(pwd)"
-[ ! -f $ROOT/.env ] || set -o allexport; source $ROOT/.env; set +o allexport;
-[ ! -f $ROOT/.env.local ] || set -o allexport; source $ROOT/.env.local; set +o allexport;
+[ -f $ROOT/.env ] && (set -o allexport; source $ROOT/.env; set +o allexport);
+[ -f $ROOT/.env.local ] && (set -o allexport; source $ROOT/.env.local; set +o allexport);
 
-SSH_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT}"
-width=$(tput cols)
-
-width=$(tput cols)
-line=$(printf "%${width}s" | tr ' ' '=')
+SSH_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT} -t"
 
 echo -e "${YELLOW}\nExecuting command ($@) in server (${SSH_URL}) ...${NC}"
 echo -e "${YELLOW}=========================================================================${NC}\n"
 
-ssh ${SSH_URL} -C "source /etc/profile; $@";
+ssh ${SSH_URL} -C "$@";
 
 echo -e "${YELLOW}=========================================================================${NC}"
 echo -e "${YELLOW}End of ($@) in (${SSH_URL}) ...${NC}\n"
