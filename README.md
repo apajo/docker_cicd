@@ -138,8 +138,25 @@ Force re-build:
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml --profile=test run --name=tests --rm --build --remove-orphans test;
 ```
 
-
 ## Helpers / shortcuts
+
+All Images:
+```shell
+wget -O - http://localhost:5000/v2/_catalog
+```
+
+All Tags:
+```shell
+# Get the list of all images
+IMAGES=$(wget -qO- http://localhost:5000/v2/_catalog | jq -r '.repositories[]')
+
+# Loop through each image and get the tags
+for IMAGE in $IMAGES; do
+  echo "Tags for $IMAGE:"
+  wget -qO- http://localhost:5000/v2/$IMAGE/tags/list | jq -r '.tags[]'
+done
+```
+
 
 #### Enter interactive shell
 
