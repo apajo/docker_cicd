@@ -30,8 +30,8 @@ fi
 
 # ENVIRONEMTN VARS
 export ROOT="$(pwd)"
-[ ! -f $ROOT/.env ] || set -o allexport; source $ROOT/.env; set +o allexport;
-[ ! -f $ROOT/.env.local ] || set -o allexport; source $ROOT/.env.local; set +o allexport;
+[ -f $ROOT/.env ] && (set -o allexport; source $ROOT/.env; set +o allexport);
+[ -f $ROOT/.env.local ] && (set -o allexport; source $ROOT/.env.local; set +o allexport);
 
 . /etc/profile
 
