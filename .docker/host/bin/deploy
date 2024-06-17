@@ -18,9 +18,16 @@ cleanup_ssh() {
 
 # Exit on missing argument
 if [ -z "$1" ]; then
+    echo -e "${RED}Error: Branch name is missing!${NC}"
+    exit 1
+fi
+
+# Exit on missing argument
+if [ -z "$2" ]; then
     echo -e "${RED}Error: Build name is missing!${NC}"
     exit 1
 fi
+
 
 # ENVIRONEMTN VARS
 export ROOT="$(pwd)"
@@ -41,7 +48,7 @@ echo "Cloning ($GIT_REPO) ..."
 git clone ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
 
 cd ${APP_ROOT} || exit;
-git fetch --all  && git upll --all;
+git fetch --all  && git pull --all;
 
 function cleanup()
 {

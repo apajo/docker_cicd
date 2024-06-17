@@ -129,8 +129,15 @@ ssh cicd@production bash -c "deploy master 12345"
 ### Run tests
 
 ```shell
+docker compose -f .docker/compose.yml -f .docker/compose.test.yml --profile=test run --name=tests --rm --remove-orphans test;
+```
+
+Force re-build:
+
+```shell
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml --profile=test run --name=tests --rm --build --remove-orphans test;
 ```
+
 
 ## Helpers / shortcuts
 

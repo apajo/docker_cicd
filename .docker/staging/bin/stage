@@ -82,19 +82,19 @@ echo -e "\n${GREEN}Ready! Build directory ($BUILD_DIR) created ...${NC}\n"
 
 ssh-keyscan staging >> /home/cicd/.ssh/known_hosts;
 
-# As long as the SSH tunnel isnt working:
-docker run -d -p 5000:5000 --name local-registry registry:2
+## As long as the SSH tunnel isnt working:
+#docker run -d -p 5000:5000 --name local-registry registry:2
 
-# echo -e "\n${GREEN}Creating registry tunnel ...${NC}\n"
-# echo "ssh $SSH_TUNNEL -N -f"
+echo -e "\n${GREEN}Creating registry tunnel ...${NC}\n"
+echo "ssh $SSH_TUNNEL -N -f"
 
-# ssh $SSH_TUNNEL -N -f
-# if [ ! $? -eq 0 ]; then
-#   echo -e "${RED}Failed to create SSH tunnel.${NC}"
-#   exit 1
-# fi
+ssh $SSH_TUNNEL -N -f
+if [ ! $? -eq 0 ]; then
+ echo -e "${RED}Failed to create SSH tunnel.${NC}"
+ exit 1
+fi
 
-# SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
+SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
 
 # tail -f /dev/null

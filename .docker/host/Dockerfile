@@ -15,7 +15,7 @@ RUN apk add --no-cache \
     bash-completion \
     docker-cli-compose;
 
-RUN apk add --update --no-cache net-tools busybox-extras nano tree moreutils parallel make ncurses;
+RUN apk add --update --no-cache net-tools busybox-extras nano tree moreutils parallel make ncurses shadow;
 
 # Install Docker Compose V2 as a Docker plugin
 RUN mkdir -p ~/.docker/cli-plugins/ && \
@@ -28,7 +28,8 @@ RUN adduser -g cicd -g rootless -D cicd -D docker; \
     touch /home/cicd/.ssh/authorized_keys; \
     touch /home/cicd/.ssh/know_hosts; \
     chown -R cicd:cicd /home/cicd; \
-    chmod 700 /home/cicd/.ssh && chmod 600 /home/cicd/.ssh/authorized_keys
+    chmod 700 /home/cicd/.ssh && chmod 600 /home/cicd/.ssh/authorized_keys && \
+    usermod -s /bin/bash cicd
 
 RUN passwd -u cicd; \
     ssh-keygen -A;

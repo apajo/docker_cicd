@@ -11,10 +11,8 @@ chmod 666 /var/run/docker.sock;
 env | grep _ | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /etc/environment
 chmod +x /etc/environment
 
-# Update /etc/profile to export environment variables except the excluded ones
-EXCLUDED_VARS="PUBLIC_KEY,SSH_PASSWORD"
-EXCLUDED_VARS_PATTERN=$(echo $EXCLUDED_VARS | sed 's/,/|/g')
-grep -qxF '[ ! -f /etc/environment ] || export $(sed "s/#.*//g" /etc/environment | grep -Ev "($EXCLUDED_VARS_PATTERN)" | xargs)' /etc/profile || echo '[ ! -f /etc/environment ] || export $(sed "s/#.*//g" /etc/environment | grep -Ev "($EXCLUDED_VARS_PATTERN)" | xargs)' >> /etc/profile
+# Update /etc/profile to export environment variables except PUBLIC_KEY
+grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment | grep -v PUBLIC_KEY | xargs)' /etc/profile || echo '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment | grep -v PUBLIC_KEY | xargs)' >> /etc/profile
 
 wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
 

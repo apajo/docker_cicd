@@ -12,4 +12,4 @@ wait-for-it.sh ${PRODUCTION_HOST}:${PRODUCTION_PORT} -t 10;
 
 echo "Setting up prod env ..."
 
-bin/ssh/prod "deploy prod_12345";
+bin/ssh/prod deploy test_repo prod_12345;
