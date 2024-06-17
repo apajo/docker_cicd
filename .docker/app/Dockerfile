@@ -1,3 +1,5 @@
+ARG CACHEBUST=1 # force rebuild
+
 FROM alpine:latest
 
 WORKDIR /app
