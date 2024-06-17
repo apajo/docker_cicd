@@ -6,5 +6,4 @@ services:
     image: localhost:5000/test_repo:${VERSION:-local}
     container_name: test_repo
     hostname: test_repo
-    restart: unless-stopped
     env_file: ../.env

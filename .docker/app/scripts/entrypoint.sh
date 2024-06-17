@@ -13,4 +13,4 @@ echo -e "\nApp is exiting ... \n"
 
 sleep 2
 
-exec "$@"
+exit 0;
