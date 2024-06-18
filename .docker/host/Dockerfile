@@ -63,5 +63,3 @@ COPY --chmod=a-w+x --chown=cicd:cicd .docker/host/bin/ /usr/local/bin/
 COPY --chmod=+x --chown=cicd:cicd .docker/host/scripts/* /usr/bin/
 
 ENTRYPOINT ["/usr/bin/host-entrypoint.sh"]
-
-CMD ["dockerd-entrypoint.sh"]

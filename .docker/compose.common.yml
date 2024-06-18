@@ -30,15 +30,12 @@ services:
     restart: always
 #    ports:
 #      - "1248:22"
-##      - "2375:2375" # Docker daemon port (if needed)
+#      - "2376:2376" # Docker daemon port (if needed)
     privileged: true
     environment:
+#      - DOCKER_HOST=tcp://localhost:2376  # Set Docker host to the DinD service
+      - DOCKER_OPTS=--insecure-registry=registry:5000 --insecure-registry=localhost:5000
       - DOCKER_TLS_CERTDIR=/certs
-      - REGISTRY_STORAGE_DELETE_ENABLED=true
     volumes:
-#      - docker_dind_vol:/var/lib/docker # Persist Docker data
-      - certs:/certs
-      - /var/run/docker.sock:/var/run/docker.sock
       - ssh_config:/etc/ssh
       - user_ssh:/home/cicd/.ssh
-      - backups_vol:/var/backups/digicmr

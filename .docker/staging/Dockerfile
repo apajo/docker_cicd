@@ -64,5 +64,3 @@ RUN ln -s /app/build /home/cicd/build; \
 COPY --chmod=a-w+x --chown=cicd:cicd .docker/staging/bin/ /usr/local/bin
 
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
-
-CMD ["dockerd-entrypoint.sh"]

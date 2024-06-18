@@ -8,8 +8,6 @@ services:
       service: host_base
     container_name: staging
     hostname: staging
-    environment:
-      - DOCKER_OPTS=--insecure-registry=registry:5000
     links:
       - registry
     depends_on:
@@ -20,6 +18,10 @@ services:
     networks:
       - registry_net
       - staging_net
+    volumes:
+      - staging_dind_vol:/var/lib/docker
+      - staging_certs:/certs
+      - staging_backups_vol:/var/backups/digicmr
     healthcheck:
       test: nc -z localhost 22 || exit 1
       interval: 30s
@@ -36,13 +38,15 @@ services:
       service: host_base
     container_name: host
     hostname: host
-    environment:
-      - DOCKER_OPTS=--insecure-registry=registry:5000
     ports:
       - "1250:22"
     profiles: [host]
     networks:
       - staging_net
+    volumes:
+      - host_dind_vol:/var/lib/docker
+      - host_certs:/certs
+      - host_backups_vol:/var/backups/digicmr
     healthcheck:
       test: nc -z localhost 22 || exit 1
       interval: 30s
@@ -60,6 +64,8 @@ services:
     container_name: staging_registry
     hostname: "registry"
     restart: always
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
     profiles: ["", staging]
     networks:
       - registry_net
@@ -71,11 +77,15 @@ services:
       start_period: 5s
 
 volumes:
-  docker_dind_vol:
-  certs:
+  staging_dind_vol:
+  staging_certs:
+  staging_backups_vol:
+  host_dind_vol:
+  host_certs:
+  host_backups_vol:
   user_ssh:
   ssh_config:
-  backups_vol:
+
 
 networks:
   registry_net:

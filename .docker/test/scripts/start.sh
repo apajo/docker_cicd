@@ -2,8 +2,12 @@
 
 echo -e "\nReady to run the tests ... \n"
 
+# For testing purposes, we will keep the container running
+# tail -f /dev/null
+
+
 # Loop that iterates 10 times
-for ((i=1; i<=10; i++))
+for ((i=1; i<=1; i++))
 do
   echo -e "\nRunning iteration $i/10 ... \n"
 
