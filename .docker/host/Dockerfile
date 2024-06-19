@@ -43,7 +43,7 @@ RUN ssh-keyscan bitbucket.org >> /home/cicd/.ssh/known_hosts \
 
 COPY .docker/staging/sshd/ /etc/ssh/
 COPY .docker/staging/sshd/banner/host /etc/ssh/banner
-COPY .docker/staging/sshd/banner/host /etc/motd.
+COPY .docker/staging/sshd/banner/host /etc/motd
 
 RUN touch /var/log/btmp
 
