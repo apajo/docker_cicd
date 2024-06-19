@@ -22,6 +22,14 @@ services:
       - staging_dind_vol:/var/lib/docker
       - staging_certs:/certs
       - staging_backups_vol:/var/backups/digicmr
+    deploy:
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 1G
+        reservations:
+          cpus: "0.25"
+          memory: 512M
     healthcheck:
       test: nc -z localhost 22 || exit 1
       interval: 30s
