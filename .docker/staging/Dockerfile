@@ -40,6 +40,7 @@ COPY --chmod=+x .docker/staging/scripts/* /usr/bin/
 
 COPY .docker/staging/sshd/ /etc/ssh/
 COPY .docker/staging/sshd/banner/staging /etc/ssh/banner
+COPY .docker/staging/sshd/banner/staging /etc/motd
 
 RUN touch /var/log/btmp
 

@@ -34,7 +34,7 @@ services:
     privileged: true
     environment:
 #      - DOCKER_HOST=tcp://localhost:2376  # Set Docker host to the DinD service
-      - DOCKER_OPTS=--insecure-registry=registry:5000 --insecure-registry=localhost:5000
+      - DOCKER_OPTS=--insecure-registry=registry:5000
       - DOCKER_TLS_CERTDIR=/certs
     volumes:
       - ssh_config:/etc/ssh
