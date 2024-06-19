@@ -6,8 +6,6 @@ addgroup cicd root;
 addgroup cicd rootless;
 addgroup cicd docker
 
-chmod 666 /var/run/docker.sock;
-
 env | grep _ | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /etc/environment
 chmod +x /etc/environment
 
