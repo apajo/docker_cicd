@@ -1,25 +1,32 @@
 .PHONY: install build test push deploy help
 .DEFAULT_GOAL := install
-# SHELL := /bin/bash
+SHELL := /bin/bash
 
 # Default targets
 all: install build
 
-help:           ## Show this help.
+# Require VERSION veriable
+ifeq ($(filter help,$(MAKECMDGOALS)),)
+    ifndef VERSION
+        $(error VERSION is not set. Please set it by using VERSION=x.y.z);
+    endif
+endif
+
+help:               ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-install:           ## Install script
+install:            ## Install script
 	docker compose --profile=build build --no-cache --with-dependencies
 
-build:           ## Build script
+build:              ## Build script
 	docker compose build --no-cache --with-dependencies
 
-test:           ## Test script
+test:               ## Test script
 	docker compose --profile=test run --build --remove-orphans --rm test
 
-push:           ## Push script
+push:               ## Push script
 	docker compose push
 
-deploy:           ## Pull/run script
+deploy:             ## Pull/run script
 	docker compose pull
 	docker compose up
