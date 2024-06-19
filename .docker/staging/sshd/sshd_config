@@ -110,8 +110,6 @@ Banner /etc/ssh/banner
 # override default of no subsystems
 # Subsystem	sftp	internal-sftp
 
-UsePAM yes
-
 # Example of overriding settings on a per-user basis
 #Match User anoncvs
 #	X11Forwarding no
