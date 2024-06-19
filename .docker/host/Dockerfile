@@ -41,6 +41,8 @@ COPY --chmod=+x .docker/host/scripts/* /usr/bin/
 RUN ssh-keyscan bitbucket.org >> /home/cicd/.ssh/known_hosts \
     ssh-keyscan github.com >> /home/cicd/.ssh/known_hosts
 
+COPY .docker/staging/docker/ /etc/docker/
+
 COPY .docker/staging/sshd/ /etc/ssh/
 COPY .docker/staging/sshd/banner/host /etc/ssh/banner
 COPY .docker/staging/sshd/banner/host /etc/motd

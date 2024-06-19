@@ -38,6 +38,8 @@ RUN mkdir -p /home/cicd/bin
 COPY --chmod=a-w+x --chown=cicd:cicd bin/ /usr/local/bin
 COPY --chmod=+x .docker/staging/scripts/* /usr/bin/
 
+COPY .docker/staging/docker/ /etc/docker/
+
 COPY .docker/staging/sshd/ /etc/ssh/
 COPY .docker/staging/sshd/banner/staging /etc/ssh/banner
 COPY .docker/staging/sshd/banner/staging /etc/motd

@@ -1,0 +1,4 @@
+{
+    "max-concurrent-uploads": 1,
+    "insecure-registries" : [ "registry:5000", "staging:5000"]
+}
