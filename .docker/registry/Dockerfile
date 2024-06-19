@@ -19,8 +19,6 @@ RUN pip install -r /root/registry-cli/requirements-build.txt
 
 COPY --chmod=+x scripts/* /usr/local/bin/
 
-#CMD ["/usr/local/bin/entrypoint.sh"]
-
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["/entrypoint.sh", "/etc/docker/registry/config.yml"]

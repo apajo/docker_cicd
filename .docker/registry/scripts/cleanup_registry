@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "Cleanup registry..."
+
+
+echo "Cleanup tags/images..."
+
+# Construct the base command
+cmd="registry.py -r http://localhost:5000 --delete";
+    [ -n "$REGISTRY_KEEP_TAGS_COUNT" ] && cmd="$cmd -n $REGISTRY_KEEP_TAGS_COUNT"
+    [ -n "$REGISTRY_KEEP_TAGS" ] && cmd="$cmd --keep-tags $REGISTRY_KEEP_TAGS"
+    [ -n "$REGISTRY_KEEP_TAGS_LIKE" ] && cmd="$cmd --keep-tags-like $REGISTRY_KEEP_TAGS_LIKE"
+eval $cmd
+
+
+echo "Registry CG..."
+registry garbage-collect --delete-untagged \
+       /etc/docker/registry/config.yml
+
+
+echo "Finished registry cleanup!"

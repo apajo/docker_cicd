@@ -13,7 +13,7 @@ services:
         reservations:
           cpus: "0.10"
           memory: 128M
-          
+
   host_base:
     build:
       context: ../

@@ -64,8 +64,11 @@ services:
     container_name: staging_registry
     hostname: "registry"
     restart: always
-    environment:
-      - REGISTRY_STORAGE_DELETE_ENABLED=true
+    env_file:
+      - path: ../.env
+        required: true
+      - path: ../.env.local
+        required: false
     profiles: ["", staging]
     networks:
       - registry_net
