@@ -72,26 +72,40 @@ Example __Makefile.cicd__:
 ```shell
 .PHONY: install build test push deploy help
 .DEFAULT_GOAL := install
+SHELL := /bin/bash
 
-help:           ## Show this help.
+# Default targets
+all: install build
+
+# Require VERSION veriable
+ifeq ($(filter help,$(MAKECMDGOALS)),)
+    ifndef VERSION
+        $(error VERSION is not set. Please set it by using VERSION=x.y.z);
+    endif
+endif
+
+help:               ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-install:           ## Install (aka. prebuild) the containers
-	docker compose --profile=build build
+install:            ## Install script
+	docker compose --profile=build build --no-cache --with-dependencies
 
-build:           ## Build the containers
-	docker compose build
+build:              ## Build script
+	docker compose build --no-cache --with-dependencies
 
-test:           ## Run tests in the containers
+test:               ## Test script
 	docker compose --profile=test run --build --remove-orphans --rm test
 
-push:           ## Push the built image
+push:               ## Push script
 	docker compose push
 
-deploy:           ## Deploy docker image
+deploy:             ## Pull/run script
 	docker compose pull
 	docker compose up
+
 ```
+
+__VERSION__ variable is defined for the deployment process.
 
 ### Run staging server
 
