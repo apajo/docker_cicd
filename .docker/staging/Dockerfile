@@ -1,4 +1,4 @@
-FROM docker:26.0.0-dind-rootless as dind-ssh
+FROM docker:26.0.0-dind as dind-ssh
 
 ARG SSH_PASSWORD
 
