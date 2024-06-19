@@ -45,7 +45,7 @@ SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
 
 echo "Cloning ($GIT_REPO) ..."
-git clone ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
+git clone --depth=1 ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
 
 cd ${APP_ROOT} || exit;
 git fetch --all  && git pull --all;
