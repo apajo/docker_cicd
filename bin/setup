@@ -48,7 +48,7 @@ setup_environment() {
             echo "" > .env.local
             
             echo "GIT_REPO=$GIT_REPO" >> .env.local
-            echo "PUBLIC_KEY=$PUBLIC_KEY" >> .env.local
+            echo "PUBLIC_KEY=\"$PUBLIC_KEY\"" >> .env.local
             echo "STAGING_SSH_DSN=$STAGING_SSH_DSN" >> .env.local
 
             dialog --msgbox "Environment setup completed and values added to .env.local" 8 40
