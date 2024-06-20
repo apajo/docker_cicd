@@ -67,7 +67,7 @@ setup_staging_server() {
     docker compose --profile=staging up --build -d
 
     # Extract the public key
-    public_key=$(docker exec -it --user cicd staging bash -c "cat ~/.ssh/id_rsa.pub")
+    public_key=$(docker exec -it --user cicd staging bash -c "cat /home/cicd/.ssh/id_rsa.pub")
     echo "$public_key" | xclip -selection clipboard
  
     # Display the public key with instructions
