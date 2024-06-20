@@ -35,13 +35,13 @@ show_menu() {
 # Function to setup the environment
 setup_environment() {
     GIT_REPO=$(dialog --inputbox "Enter GIT Repo URL:" 8 40 $GIT_REPO 3>&1 1>&2 2>&3 3>&-)
-    STAGING_SSH=$(dialog --inputbox "Enter Staging SSH Tunnel:" 8 40 $STAGING_SSH 3>&1 1>&2 2>&3 3>&-)
+    STAGING_SSH_DSN=$(dialog --inputbox "Enter Staging SSH Tunnel:" 8 40 $STAGING_SSH_DSN 3>&1 1>&2 2>&3 3>&-)
     PUBLIC_KEY=$(dialog --inputbox "Enter your public key:" 8 40 $PUBLIC_KEY 3>&1 1>&2 2>&3 3>&-)
 
     dialog --yesno "Do you want to apply the following settings? \
     \n\n GIT Repo: $GIT_REPO \
     \n Public key: $PUBLIC_KEY \
-    \n Staging SSH Tunnel: $STAGING_SSH" 10 50
+    \n Staging SSH Tunnel: $STAGING_SSH_DSN" 10 50
     response=$?
     case $response in
         0)
@@ -49,7 +49,7 @@ setup_environment() {
             
             echo "GIT_REPO=$GIT_REPO" >> .env.local
             echo "PUBLIC_KEY=$PUBLIC_KEY" >> .env.local
-            echo "STAGING_SSH=$STAGING_SSH" >> .env.local
+            echo "STAGING_SSH_DSN=$STAGING_SSH_DSN" >> .env.local
 
             dialog --msgbox "Environment setup completed and values added to .env.local" 8 40
             ;;
