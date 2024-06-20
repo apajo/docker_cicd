@@ -1,5 +1,8 @@
 #!/bin/bash
 
+STAGING_HOST=$(echo $STAGING_SSH_DSN | cut -d'@' -f2 | cut -d':' -f1)
+STAGING_PORT=$(echo $STAGING_SSH_DSN | cut -d':' -f2)
+
 echo "Host entrypoint..."
 
 addgroup cicd root;
