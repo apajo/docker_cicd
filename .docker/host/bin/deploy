@@ -36,11 +36,15 @@ export ROOT="$(pwd)"
 
 . /etc/profile
 
+STAGING_USER=$(echo $STAGING_SSH_DSN | cut -d'@' -f1)
+STAGING_HOST=$(echo $STAGING_SSH_DSN | cut -d'@' -f2 | cut -d':' -f1)
+STAGING_PORT=$(echo $STAGING_SSH_DSN | cut -d':' -f2)
+
 APP_ROOT=/app;
 BRANCH=$1;
 VERSION=$2;
 MAKEFILE=${MAKE_FILE:-Makefile.cicd}
-STAGING_URL="${STAGING_USER}@staging"
+STAGING_URL="${STAGING_USER}@${STAGING_HOST}"
 SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
 

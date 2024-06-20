@@ -35,13 +35,17 @@ export ROOT="$(pwd)"
 
 . /etc/profile
 
+STAGING_USER=$(echo $STAGING_SSH_DSN | cut -d'@' -f1)
+STAGING_HOST=$(echo $STAGING_SSH_DSN | cut -d'@' -f2 | cut -d':' -f1)
+STAGING_PORT=$(echo $STAGING_SSH_DSN | cut -d':' -f2)
+
 BUILD_ROOT=/app/build;
 BRANCH=$1;
 BUILD_VERSION=$2;
 export VERSION=$BRANCH\_$BUILD_VERSION
 BUILD_DIR=$BUILD_ROOT/$VERSION;
 MAKEFILE=${MAKE_FILE:-Makefile.cicd}
-STAGING_URL="${STAGING_USER}@staging"
+STAGING_URL="${STAGING_USER}@${STAGING_HOST} -p=${STAGING_PORT}"
 SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
 echo -e "\n${BOLD_WHITE}"
