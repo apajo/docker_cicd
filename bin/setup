@@ -79,7 +79,13 @@ setup_host_server() {
     check_environment
     dialog --infobox "Setting up Host Server..." 3 40
     docker compose --profile=host up --build -d
-    dialog --msgbox "Host Server setup completed" 8 40
+
+    # Extract the public key
+    public_key=$(docker exec -it --user cicd host bash -c "cat /home/cicd/.ssh/id_rsa.pub")
+    echo "$public_key" | xclip -selection clipboard
+ 
+    # Display the public key with instructions
+    dialog --msgbox "Host Server setup completed.\n\nCopy this public key to your git repository access keys (copied to your clipboard):\n\n$public_key" 20 70
 }
 
 check_environment() {
