@@ -1,5 +1,0 @@
-#!/bin/bash
-
-bin/ssh/staging stage master 12345
-
-bin/ssh/prod /home/cicd/bin/deploy master 12345

@@ -1,0 +1,111 @@
+#!/bin/bash
+
+export ROOT="$(pwd)"
+[ ! -f $ROOT/.env ] || export $(cat $ROOT/.env | sed 's/#.*//g' | xargs);
+[ ! -f $ROOT/.env.local ] || export $(cat $ROOT/.env.local | sed 's/#.*//g' | xargs);
+
+
+# Check if dialog is installed, if not, install it
+if ! command -v dialog &> /dev/null || ! command -v xclip &> /dev/null
+then
+    echo "dialog could not be found. Installing..."
+    sudo apt-get install dialog xclip -y
+fi
+
+# Define the function to show the menu
+show_menu() {
+    dialog --clear --backtitle "Bash Dialog Menu" \
+    --title "Main Menu" \
+    --menu "Choose an option:" 15 50 3 \
+    1 "Setup Environment" \
+    2 "Setup Staging environment" \
+    3 "Setup Host Server environment" \
+    4 "Exit" 2>"${INPUT}"
+
+    menuitem=$(<"${INPUT}")
+
+    case $menuitem in
+        1) setup_environment ;;
+        2) setup_staging_server ;;
+        3) setup_host_server ;;
+        4) clear; exit 0 ;;  # Clear the screen before exiting
+    esac
+}
+
+# Function to setup the environment
+setup_environment() {
+    GIT_REPO=$(dialog --inputbox "Enter GIT Repo URL:" 8 40 $GIT_REPO 3>&1 1>&2 2>&3 3>&-)
+    STAGING_SSH=$(dialog --inputbox "Enter Staging SSH Tunnel:" 8 40 $STAGING_SSH 3>&1 1>&2 2>&3 3>&-)
+    PUBLIC_KEY=$(dialog --inputbox "Enter your public key:" 8 40 $PUBLIC_KEY 3>&1 1>&2 2>&3 3>&-)
+
+    dialog --yesno "Do you want to apply the following settings? \
+    \n\n GIT Repo: $GIT_REPO \
+    \n Public key: $PUBLIC_KEY \
+    \n Staging SSH Tunnel: $STAGING_SSH" 10 50
+    response=$?
+    case $response in
+        0)
+            echo "" > .env.local
+            
+            echo "GIT_REPO=$GIT_REPO" >> .env.local
+            echo "PUBLIC_KEY=$PUBLIC_KEY" >> .env.local
+            echo "STAGING_SSH=$STAGING_SSH" >> .env.local
+
+            dialog --msgbox "Environment setup completed and values added to .env.local" 8 40
+            ;;
+        1)
+            dialog --msgbox "Setup Environment canceled" 8 40
+            ;;
+    esac
+}
+
+# Function to setup the staging server
+setup_staging_server() {
+    check_environment
+    dialog --infobox "Setting up Staging Server..." 3 40
+
+    docker compose --profile=staging up --build -d
+
+    # Extract the public key
+    public_key=$(docker exec -it --user cicd staging bash -c "cat ~/.ssh/id_rsa.pub")
+    echo "$public_key" | xclip -selection clipboard
+ 
+    # Display the public key with instructions
+    dialog --msgbox "Staging Server setup completed.\n\nCopy this public key to your git repository access keys (copied to your clipboard):\n\n$public_key" 20 70
+}
+
+# Function to setup the host server
+setup_host_server() {
+    check_environment
+    dialog --infobox "Setting up Host Server..." 3 40
+    docker compose --profile=host up --build -d
+    dialog --msgbox "Host Server setup completed" 8 40
+}
+
+check_environment() {
+    if [ ! -f .env.local ]; then
+        environment_not_setup
+        return
+    fi
+    
+}
+environment_not_setup() {
+    dialog --yesno "The .env.local file is missing. Do you want to run 'Setup Environment' now?" 8 40
+    response=$?
+    case $response in
+        0) setup_environment ;;
+        1) dialog --msgbox "Please set up the environment before proceeding." 8 40 && exit ;;
+    esac
+}
+
+# Create a temporary file to capture user input
+INPUT=/tmp/menu.sh.$$
+
+# Cleanup temp file on exit
+trap "rm -f ${INPUT}; clear" EXIT  # Clear the screen before exiting
+
+# Show the menu
+while true
+do
+    show_menu
+done
