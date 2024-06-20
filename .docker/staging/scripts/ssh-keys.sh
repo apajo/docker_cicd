@@ -13,7 +13,7 @@ extract_host() {
 if [ ! -f /home/cicd/.ssh/id_rsa ]; then
   echo "Generating public key..."
 
-  ssh-keygen -t rsa -b 4096 -f /home/cicd/.ssh/id_rsa -N "" -C "cicd"
+  ssh-keygen -t rsa -b 4096 -f /home/cicd/.ssh/id_rsa -N "" -C "cicd@staging"
 
   cat /home/cicd/.ssh/id_rsa.pub >> /home/cicd/.ssh/authorized_keys
 fi
