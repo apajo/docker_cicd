@@ -7,7 +7,7 @@ RUN apk add --update --no-cache net-tools busybox-extras nano tree openssh bash 
 RUN adduser -g cicd -g rootless -D cicd;
 
 USER cicd
-RUN ssh-keygen -t rsa -b 4096 -f /home/cicd/.ssh/id_rsa -N ""
+RUN ssh-keygen -t rsa -b 4096 -f /home/cicd/.ssh/id_rsa -N "" -C "cicd@test"
 RUN touch /home/cicd/.ssh/authorized_keys
 RUN cat /home/cicd/.ssh/id_rsa.pub >> /home/cicd/.ssh/authorized_keys
 
