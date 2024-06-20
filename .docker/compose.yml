@@ -25,11 +25,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.40"
-          memory: 1G
+          cpus: "2"
+          memory: 4GB
         reservations:
-          cpus: "0.25"
-          memory: 512M
+          cpus: "1"
+          memory: 1G
     healthcheck:
       test: nc -z localhost 22 || exit 1
       interval: 30s
