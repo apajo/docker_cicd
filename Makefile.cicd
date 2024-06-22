@@ -19,10 +19,10 @@ install:            ## Install script
 	docker compose --profile=build build --no-cache --with-dependencies
 
 build:              ## Build script
-	docker compose build --no-cache --with-dependencies
+	docker compose build --with-dependencies
 
 test:               ## Test script
-	docker compose --profile=test run --build --remove-orphans --rm test
+	docker compose --profile=test run --remove-orphans --rm app
 
 push:               ## Push script
 	docker compose push

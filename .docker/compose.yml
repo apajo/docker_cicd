@@ -7,3 +7,9 @@ services:
     container_name: test_repo
     hostname: test_repo
     env_file: ../.env
+    networks:
+      - demo_net
+
+networks:
+  demo_net:
+    driver: bridge
