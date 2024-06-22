@@ -14,6 +14,8 @@ services:
     ports:
       - "1251:22"
     profiles: ["", staging]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - registry_net
       - staging_net
@@ -47,6 +49,8 @@ services:
     ports:
       - "1250:22"
     profiles: [host]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - staging_net
     volumes:
@@ -75,6 +79,8 @@ services:
       - path: ../.env.local
         required: false
     profiles: ["", staging]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - registry_net
     healthcheck:
