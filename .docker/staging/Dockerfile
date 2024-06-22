@@ -51,6 +51,8 @@ RUN if [ -n "${SSH_PASSWORD}" ]; then echo "cicd:${SSH_PASSWORD}" | chpasswd; fi
 # Staging build step
 FROM dind-ssh
 
+ENV BUILDKIT_PROGRESS="plain"
+
 WORKDIR /home/cicd
 
 # Create backup and build dirs

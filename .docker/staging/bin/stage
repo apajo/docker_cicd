@@ -100,8 +100,6 @@ fi
 
 SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
-export BUILDKIT_PROGRESS=plain
-
 # tail -f /dev/null
 
 if [ -f "$MAKEFILE" ]; then

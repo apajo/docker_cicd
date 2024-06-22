@@ -20,6 +20,7 @@ services:
       - registry_net
       - staging_net
     volumes:
+      - staging_app_vol:/app
       - staging_dind_vol:/var/lib/docker
       - staging_certs:/certs
       - staging_backups_vol:/var/backups/digicmr
@@ -91,6 +92,7 @@ services:
       start_period: 5s
 
 volumes:
+  staging_app_vol:
   staging_dind_vol:
   staging_certs:
   staging_backups_vol:

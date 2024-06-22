@@ -1,4 +1,9 @@
 {
     "max-concurrent-uploads": 5,
-    "insecure-registries" : [ "registry:5000", "staging:5000"]
+    "insecure-registries" : [ "registry:5000", "staging:5000"],
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-file": "3",
+        "max-size": "10m"
+    }
 }
