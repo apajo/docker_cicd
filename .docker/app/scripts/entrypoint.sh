@@ -14,9 +14,17 @@ echo -e "\nChecking DNS lookup ... \n"
 nslookup github.com
 
 if [ $? -ne 0 ]; then
-  echo -e "DNS lookup failed!"
+  echo -e "GitHub DNS lookup failed!"
   exit 1
 fi
+
+nslookup google.com
+
+if [ $? -ne 0 ]; then
+  echo -e "Google DNS lookup failed!"
+  exit 1
+fi
+
 
 echo -e "\nApp is exiting ... \n"
 
