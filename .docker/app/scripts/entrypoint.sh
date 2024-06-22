@@ -4,8 +4,8 @@ echo -e "\nApp is running ... \n"
 
 sleep 1
 
-echo -e "\nEnvironment variable VERSION: $VERSION \n"
-echo -e "\nEnvironment variable SOME_ENV_VALUE: $SOME_ENV_VALUE \n"
+echo -e "\nEnvironment variable VERSION: ${VERSION} \n"
+echo -e "\nEnvironment variable SOME_ENV_VALUE: ${SOME_ENV_VALUE} \n"
 
 sleep 1
 
