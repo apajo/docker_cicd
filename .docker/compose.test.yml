@@ -27,7 +27,7 @@ services:
     env_file: !override [../.env.test]
     profiles: [test]
     ports: !reset []
-
+    
   registry:
     env_file: !override [../.env.test]
     profiles: [test]
@@ -38,3 +38,4 @@ services:
         - SSH_PASSWORD=KollaneHobune
     env_file: !override [../.env.test]
     profiles: [test]
+    ports: !reset []
