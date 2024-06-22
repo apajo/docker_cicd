@@ -6,7 +6,6 @@ services:
     extends:
       file: compose.common.yml
       service: host_base
-    container_name: staging
     hostname: staging
     links:
       - registry
@@ -44,7 +43,6 @@ services:
     extends:
       file: compose.common.yml
       service: host_base
-    container_name: host
     hostname: host
     ports:
       - "1250:22"
@@ -69,7 +67,6 @@ services:
     extends:
       file: compose.common.yml
       service: config
-    container_name: staging_registry
     hostname: "registry"
     restart: always
     env_file:

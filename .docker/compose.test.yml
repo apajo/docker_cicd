@@ -8,7 +8,6 @@ services:
     extends:
       file: compose.common.yml
       service: config
-    container_name: staging_test
     hostname: test
     env_file: !override [../.env.test]
     links:
