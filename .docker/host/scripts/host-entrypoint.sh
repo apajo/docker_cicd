@@ -20,7 +20,7 @@ wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
 ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 
 # Start dockerd
-dockerd-entrypoint.sh &
+dockerd --tls=false &
 
 # Start sshd
 # /usr/sbin/sshd -D -e > /dev/stdout 2>/dev/stderr &

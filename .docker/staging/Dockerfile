@@ -52,6 +52,9 @@ RUN if [ -n "${SSH_PASSWORD}" ]; then echo "cicd:${SSH_PASSWORD}" | chpasswd; fi
 FROM dind-ssh
 
 ENV BUILDKIT_PROGRESS="plain"
+#ENV DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"
+#ENV DOCKER_CONFIG="${HOME}/.docker"
+#ENV DOCKER_CONFIG="${HOME}/.docker"
 
 WORKDIR /home/cicd
 

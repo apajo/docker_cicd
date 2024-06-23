@@ -13,7 +13,7 @@ grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment
 ssh-keys.sh
 
 # Start dockerd
-dockerd-entrypoint.sh &
+dockerd --tls=false &
 
 # Start sshd
 # /usr/sbin/sshd -D -e > /dev/stdout 2>/dev/stderr &

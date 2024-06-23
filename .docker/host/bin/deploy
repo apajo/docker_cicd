@@ -44,7 +44,7 @@ APP_ROOT=/app;
 BRANCH=$1;
 VERSION=$2;
 MAKEFILE=${MAKE_FILE:-Makefile.cicd}
-STAGING_URL="${STAGING_USER}@${STAGING_HOST} -p=${STAGING_PORT}"
+STAGING_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT}"
 SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
 
@@ -70,7 +70,6 @@ if [ ! -f "$MAKEFILE" ]; then
     echo -e "${RED}Makefile not found: $MAKEFILE (in: $APP_ROOT)${NC}"
     exit 1
 fi
-
 
 echo -e "\n${GREEN}Creating staging tunnel ...${NC}\n"
 echo "ssh $SSH_TUNNEL -N -f"

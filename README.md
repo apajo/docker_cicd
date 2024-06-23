@@ -175,27 +175,27 @@ done
 #### Enter interactive shell
 
 ```shell
-docker exec -it --user cicd staging bash
+docker compose exec -it --user cicd staging bash
 ```
 
 #### Get public key from the container
 
 ```shell
-docker exec -it --user cicd staging bash -c "cat ~/.ssh/id_rsa.pub"
+docker compose exec -it --user cicd staging bash -c "cat ~/.ssh/id_rsa.pub"
 ```
 
 #### Add your/host public key to authorized keys in the container
 
 ```shell
 PUBLIC_KEY=$(cat $HOME/.ssh/id_rsa.pub); \
-docker exec -it --user cicd host bash -c "echo $PUBLIC_KEY >> ~/.ssh/authorized_keys"
+docker compose exec -it --user cicd host bash -c "echo $PUBLIC_KEY >> ~/.ssh/authorized_keys"
 ```
 
 #### Add a domain to known hosts
 
 ```shell
 read -p "Enter the domain: " DOMAIN; \
-docker exec -it --user cicd staging bash -c "ssh-keyscan $DOMAIN >> ~/.ssh/known_hosts"
+docker compose exec -it --user cicd staging bash -c "ssh-keyscan $DOMAIN >> ~/.ssh/known_hosts"
 ```
 
 #### Clear containers:

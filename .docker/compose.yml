@@ -104,7 +104,6 @@ volumes:
   user_ssh:
   ssh_config:
 
-
 networks:
   registry_net:
     driver: bridge
