@@ -28,6 +28,8 @@ services:
       - path: ../.env.local
         required: false
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 #    ports:
 #      - "1248:22"
 #      - "2376:2376" # Docker daemon port (if needed)

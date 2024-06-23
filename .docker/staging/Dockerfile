@@ -28,7 +28,7 @@ RUN adduser -g cicd -g rootless -D cicd -D docker; \
     touch /home/cicd/.ssh/authorized_keys; \
     touch /home/cicd/.ssh/know_hosts; \
     chown -R cicd:cicd /home/cicd; \
-    chmod 700 /home/cicd/.ssh && chmod 400 /home/cicd/.ssh/authorized_keys && \
+    chmod 700 /home/cicd/.ssh && chmod 600 /home/cicd/.ssh/authorized_keys && \
     usermod -p '*' -s /bin/bash cicd
 
 RUN passwd -u cicd; \
