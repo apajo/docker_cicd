@@ -45,8 +45,6 @@ services:
       file: compose.common.yml
       service: host_base
     hostname: host
-    links:
-      - staging
     ports:
       - "1250:22"
     profiles: [host]
