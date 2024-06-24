@@ -55,6 +55,11 @@ Create `.env.local` to override `.env` parameters.
 
 _Additionally, you can create `compose.override.yml` to override `compose.yml` parameters. For more info taht, checkout [here](https://docs.docker.com/compose/)_
 
+Edit `/etc/default/docker` 
+
+```shell
+```
+
 > __NB!__ Make sure tou have setup your __Makefile.cicd__ file in your git repository.
 
 ### Git repo requirements

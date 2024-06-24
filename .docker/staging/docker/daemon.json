@@ -1,10 +1,20 @@
 {
+    "debug": false,
     "max-concurrent-uploads": 5,
     "insecure-registries" : [ "registry:5000", "staging:5000"],
+    "default-runtime": "runc",
+    "storage-driver": "overlay2",
     "log-driver": "json-file",
     "log-opts": {
         "max-file": "3",
         "max-size": "10m"
     },
-    "dns": ["127.0.0.53", "127.0.0.11", "8.8.8.8", "8.8.4.4"]
+    "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    "experimental": false,
+    "builder": {
+        "gc": {
+            "defaultKeepStorage": "20GB",
+            "enabled": true
+        }
+    }
 }
