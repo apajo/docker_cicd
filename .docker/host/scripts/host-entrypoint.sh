@@ -15,7 +15,7 @@ chmod +x /etc/environment
 # Update /etc/profile to export environment variables except PUBLIC_KEY
 grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment | grep -v PUBLIC_KEY | xargs)' /etc/profile || echo '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment | grep -v PUBLIC_KEY | xargs)' >> /etc/profile
 
-# wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
+wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
 
 ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 
