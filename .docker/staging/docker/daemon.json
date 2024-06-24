@@ -1,5 +1,6 @@
 {
     "debug": false,
+    "dns": ["10.56.100.107", "8.8.8.8"],
     "max-concurrent-uploads": 5,
     "insecure-registries" : [ "registry:5000", "staging:5000"],
     "default-runtime": "runc",
