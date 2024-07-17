@@ -24,10 +24,10 @@ This package consists of 3 different docker profiles/environments:
 
 Components:
 
-* Pushing - pushing code to the repository
-* Git repository - any source code repository
-* Staging server - server for testing, building and docker image storage
-* Host server - application host/server
+* Pushing - Configure your repo to run a pipeline/runners
+* Git repository - Your source code repository
+* Staging server - This is where your application will be tested and built (and docker images stored)
+* Host server - This is where your application will be running (and updated)
 
 ## Getting started
 
@@ -38,6 +38,8 @@ git clone https://github.com/apajo/docker_cicd.git
 ```
 
 ### Setup
+
+#### .env.local
 
 Create `.env.local` to override `.env` parameters.
 
@@ -53,7 +55,7 @@ Create `.env.local` to override `.env` parameters.
 
 
 
-### compose.override.yml
+#### compose.override.yml
 
 _Additionally, you can create `compose.override.yml` to override Docker compose parameters.
 For more info that, checkout [here](https://docs.docker.com/compose/)_
@@ -65,9 +67,29 @@ services:
       - "1252:22"
 ```
 
-This will override the default port for the staging server.
+This example will override the default port for the staging server.
 
-## Git repo requirements
+### Run the servers
+
+```shell
+docker compose up -d
+```
+
+#### Run only staging server
+
+```shell
+docker compose --profile=staging up -d
+```
+
+#### Run only host server
+
+```shell
+docker compose --profile=host up -d
+```
+
+__Note!__ You can setup ad many hosts as needed (test, prelive, production, etc.) 
+
+### Requirements for your project
 
 > __NB!__ Make sure tou have set up your __Makefile.cicd__ file in your git repository.
 
@@ -119,28 +141,6 @@ deploy:             ## Pull/run script
 
 __VERSION__ variable is defined for the deployment process.
 
-### Run staging server
-
-1. Clone this repo (https://github.com/apajo/docker_cicd)
-2. Edit environment variables by creating `.env.local` file
-3. Run:
-
-```shell
-docker compose --profile=staging up -d
-```
-
-### Run host server
-
-1. Clone this repo (https://github.com/apajo/docker_cicd)
-2. Edit environment variables by creating `.env.local` file
-3. Setup your public keys in staging and host containers
-4. Run:
-
-```shell
-docker compose --profile=host up -d
-```
-
-__Note!__ You can setup ad many hosts as needed (test, prelive, production, etc.) 
 
 ### Run in pipeline
 
