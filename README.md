@@ -15,8 +15,7 @@ The package requires a single `Makefile.cicd` file in the root of your project t
 ## Overview
 
 This package consists of 3 different docker profiles/environments:
-* `staging` - for testing, building and image storage
-* `host` - for host environment
+* `staging` - for testing, building and storage of your project
 * `test` - for testing this package
 
 ### Flow diagram / components
@@ -53,16 +52,24 @@ Create `.env.local` to override `.env` parameters.
 | `STAGING_USER`     | User for the staging environment              | `cicd`                                     |
 
 
-_Additionally, you can create `compose.override.yml` to override `compose.yml` parameters. For more info taht, checkout [here](https://docs.docker.com/compose/)_
 
-Edit `/etc/default/docker` 
+### compose.override.yml
 
-```shell
+_Additionally, you can create `compose.override.yml` to override Docker compose parameters.
+For more info that, checkout [here](https://docs.docker.com/compose/)_
+
+```yml
+services:
+  staging:
+    ports: !override
+      - "1252:22"
 ```
 
-> __NB!__ Make sure tou have setup your __Makefile.cicd__ file in your git repository.
+This will override the default port for the staging server.
 
-### Git repo requirements
+## Git repo requirements
+
+> __NB!__ Make sure tou have set up your __Makefile.cicd__ file in your git repository.
 
 __NB!__ Your git repository root directory has to have a
 __Makefile.cicd__ file with the following targets:
@@ -145,7 +152,7 @@ ssh cicd@staging bash -c "stage master 12345"
 ssh cicd@production bash -c "deploy master 12345"
 ```
 
-### Run tests
+## Run tests
 
 ```shell
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml --profile=test run --name=tests --rm --remove-orphans test;
@@ -157,61 +164,7 @@ Force re-build:
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml --profile=test run --name=tests --rm --build --remove-orphans test;
 ```
 
-## Helpers / shortcuts
+## Detailed instructions
 
-All Images:
-```shell
-wget -O - http://localhost:5000/v2/_catalog
-```
+For more read [this](./.docker/README.md)
 
-All Tags:
-```shell
-# Get the list of all images
-IMAGES=$(wget -qO- http://localhost:5000/v2/_catalog | jq -r '.repositories[]')
-
-# Loop through each image and get the tags
-for IMAGE in $IMAGES; do
-  echo "Tags for $IMAGE:"
-  wget -qO- http://localhost:5000/v2/$IMAGE/tags/list | jq -r '.tags[]'
-done
-```
-
-
-#### Enter interactive shell
-
-```shell
-docker compose exec -it --user cicd staging bash
-```
-
-#### Get public key from the container
-
-```shell
-docker compose exec -it --user cicd staging bash -c "cat ~/.ssh/id_rsa.pub"
-```
-
-#### Add your/host public key to authorized keys in the container
-
-```shell
-PUBLIC_KEY=$(cat $HOME/.ssh/id_rsa.pub); \
-docker compose exec -it --user cicd host bash -c "echo $PUBLIC_KEY >> ~/.ssh/authorized_keys"
-```
-
-#### Add a domain to known hosts
-
-```shell
-read -p "Enter the domain: " DOMAIN; \
-docker compose exec -it --user cicd staging bash -c "ssh-keyscan $DOMAIN >> ~/.ssh/known_hosts"
-```
-
-#### Clear containers:
-
-```bash
-docker stop $(docker ps -a -q); \
-docker rm $(docker ps -a -q);
-```
-
-#### Setup Docker registry
-
-```bash
-docker run -d -p 5000:5000 --name local-registry registry:2
-```
