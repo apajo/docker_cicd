@@ -83,6 +83,14 @@ fi
 SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
 echo "Pulling/loading containers ($VERSION) ..."
-make -f ${MAKE_FILE:-Makefile.cicd} deploy VERSION=$VERSION
+
+if [ -f "$MAKEFILE" ]; then
+  make -f ${MAKE_FILE:-Makefile.cicd} deploy VERSION=$VERSION
+else
+  echo -e "\n${GREEN}No Makefile found! Using docker compose ...${NC}\n"
+  echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
+
+  docker compose up --pull -d
+fi
 
 echo -e "\n${GREEN}Finished! ${NC}\n"

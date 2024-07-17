@@ -122,7 +122,7 @@ if [ -f "$MAKEFILE" ]; then
   make -f ${MAKEFILE} push VERSION=$BUILD_VERSION
 
 else
-  echo -e "\n${GREEN}No Makefile found! Using it directly docker compose ...${NC}\n"
+  echo -e "\n${GREEN}No Makefile found! Using docker compose ...${NC}\n"
   echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
 
   export VERSION=$BUILD_VERSION;
