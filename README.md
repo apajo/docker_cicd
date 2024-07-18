@@ -165,8 +165,8 @@ docker compose -f .docker/compose.yml -f .docker/compose.test.yml down
 Force re-build:
 
 ```shell
-docker compose -f .docker/compose.yml -f .docker/compose.test.yml  down --volumes;
-docker compose -f .docker/compose.yml -f .docker/compose.test.yml run  --rm --build --remove-orphans test;
+docker compose -f .docker/compose.yml -f .docker/compose.test.yml  down --volumes; \
+docker compose -f .docker/compose.yml -f .docker/compose.test.yml run  --rm --build --remove-orphans test; \
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml  down;
 ```
 

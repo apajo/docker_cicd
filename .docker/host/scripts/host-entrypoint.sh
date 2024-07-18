@@ -18,11 +18,19 @@ wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
 
 ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 
+# Update /etc/docker/daemon.json with DNS_SERVERS
+if [ ! -z "$DNS_SERVERS" ]; then
+  # Convert DNS_SERVERS to a quoted comma-separated JSON-like array
+  DNS_ARRAY=$(echo $DNS_SERVERS | sed 's/[^,]*/"&"/g')
+  export DNS_SERVERS=$DNS_ARRAY
+else
+  export DNS_SERVERS=""
+fi
+envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
+
+
 # Start dockerd
 dockerd --tls=false &
-
-# Start sshd
-# /usr/sbin/sshd -D -e > /dev/stdout 2>/dev/stderr &
 
 echo -e "\Host is ready ... \n"
 

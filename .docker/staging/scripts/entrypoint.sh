@@ -11,6 +11,18 @@ grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment
 
 ssh-keys.sh
 
+# /usr/bin/enable_cgroup_nesting.sh
+
+# Update /etc/docker/daemon.json with DNS_SERVERS
+if [ ! -z "$DNS_SERVERS" ]; then
+  # Convert DNS_SERVERS to a quoted comma-separated JSON-like array
+  DNS_ARRAY=$(echo $DNS_SERVERS | sed 's/[^,]*/"&"/g')
+  export DNS_SERVERS=$DNS_ARRAY
+else
+  export DNS_SERVERS=""
+fi
+envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
+
 # Start dockerd
 dockerd --tls=false &
 

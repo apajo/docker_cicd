@@ -15,7 +15,7 @@ RUN apk add --no-cache  --force \
     bash-completion \
     docker-cli-compose;
 
-RUN apk add --update --no-cache net-tools busybox-extras nano tree moreutils parallel make ncurses shadow;
+RUN apk add --update --no-cache net-tools busybox-extras nano tree moreutils parallel make ncurses shadow envsubst;
 
 # Install Docker Compose V2 as a Docker plugin
 RUN mkdir -p ~/.docker/cli-plugins/ && \

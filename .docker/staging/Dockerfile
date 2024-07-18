@@ -15,7 +15,7 @@ RUN apk add --no-cache --force \
     bash-completion \
     docker-cli-compose;
 
-RUN apk add --update --no-cache net-tools busybox-extras nano tree moreutils parallel make ncurses shadow;
+RUN apk add --update --no-cache net-tools busybox-extras nano tree moreutils parallel make ncurses shadow envsubst;
 
 # Install Docker Compose V2 as a Docker plugin
 RUN mkdir -p ~/.docker/cli-plugins/ && \
@@ -36,7 +36,7 @@ RUN passwd -u cicd; \
 
 RUN mkdir -p /home/cicd/bin
 COPY --chmod=a-w+x --chown=cicd:cicd bin/ /usr/local/bin
-COPY --chmod=+x .docker/staging/scripts/* /usr/bin/
+COPY --chmod=a-w+x .docker/staging/scripts/* /usr/bin/
 
 COPY .docker/staging/docker/ /etc/docker/
 
