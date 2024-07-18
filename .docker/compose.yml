@@ -10,7 +10,7 @@ services:
     networks:
       - demo_net
     volumes:
-      - test_app_volume:/app/volume/
+      - test_app_volume:/app/volume
 
 volumes:
   test_app_volume:

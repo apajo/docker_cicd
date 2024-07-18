@@ -4,8 +4,9 @@ echo -e "\nApp is running ... \n"
 
 sleep 1
 
-echo -e "\nList files in volume volume /app/volume ... \n"
-ls -la /app/volume
+echo -e "\List files in /app ... \n"
+
+tree /app
 
 sleep 1
 
