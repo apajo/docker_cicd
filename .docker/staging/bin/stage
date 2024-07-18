@@ -16,6 +16,25 @@ cleanup_ssh() {
     fi
 }
 
+cleanup() {
+    echo "Clean up build dir ($VERSION)..."
+    [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
+    if [ "$(docker image ls | grep "localhost:5000")" ]; then
+        echo "Clean up images..."
+        docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f
+    fi
+}
+
+check_command() {
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Error: $1 failed!${NC}"
+        exit 1
+    fi
+}
+
+trap cleanup EXIT
+trap cleanup_ssh EXIT
+
 # Exit on missing argument
 if [ -z "$1" ]; then
     echo -e "${RED}Error: Branch name is missing!${NC}"
@@ -28,10 +47,10 @@ if [ -z "$2" ]; then
     exit 1
 fi
 
-# ENVIRONEMTN VARS
+# ENVIRONMENT VARS
 export ROOT="$(pwd)"
-[ -f $ROOT/.env ] && (set -o allexport; source $ROOT/.env; set +o allexport);
-[ -f $ROOT/.env.local ] && (set -o allexport; source $ROOT/.env.local; set +o allexport);
+[ -f $ROOT/.env ] && (set -o allexport; source $ROOT/.env; set +o allexport)
+[ -f $ROOT/.env.local ] && (set -o allexport; source $ROOT/.env.local; set +o allexport)
 
 . /etc/profile
 
@@ -39,98 +58,81 @@ STAGING_USER=$(echo $STAGING_SSH_DSN | cut -d'@' -f1)
 STAGING_HOST=$(echo $STAGING_SSH_DSN | cut -d'@' -f2 | cut -d':' -f1)
 STAGING_PORT=$(echo $STAGING_SSH_DSN | cut -d':' -f2)
 
-BUILD_ROOT=/app/build;
-BRANCH=$1;
-BUILD_VERSION=$2;
+BUILD_ROOT=/app/build
+BRANCH=$1
+BUILD_VERSION=$2
 export VERSION=$BRANCH\_$BUILD_VERSION
-BUILD_DIR=$BUILD_ROOT/$VERSION;
+BUILD_DIR=$BUILD_ROOT/$VERSION
 MAKEFILE=${MAKE_FILE:-Makefile.cicd}
 STAGING_URL="${STAGING_USER}@staging"
 SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
 echo -e "\n${BOLD_WHITE}"
-echo "Makefile: "$MAKEFILE
-echo "Branch name: "$BRANCH
-echo "Build name: "$BUILD_VERSION
-echo "Build directory: "$BUILD_DIR
+echo "Makefile: $MAKEFILE"
+echo "Branch name: $BRANCH"
+echo "Build name: $BUILD_VERSION"
+echo "Build directory: $BUILD_DIR"
 echo -e "\n${NC}"
 
 # Remove build dir (if exists from previous failed run)
-[ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :;
+[ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
 
-echo -e "Cloning ${BOLD_WHITE}$GIT_REPO${NC} ... ";
+echo -e "Cloning ${BOLD_WHITE}$GIT_REPO${NC} ... "
 git clone --depth=1 $GIT_REPO --branch="$BRANCH" "$BUILD_DIR"
+check_command "Git clone"
 
 if [ ! -d "$BUILD_DIR" ]; then
     echo -e "${BOLD_WHITE}Error: Directory $BUILD_DIR does not exist.${NC}"
     exit 1
 fi
 
-function cleanup()
-{
-  echo "Clean up build dir ($VERSION)..."
-  [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :;
-
-  if [ "$(docker image ls | grep "localhost:5000")" ]; then
-    echo "Clean up images..."
-    docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f;
-  fi
-
-}
-
-trap cleanup EXIT
-
-cd $BUILD_DIR || exit;
+cd $BUILD_DIR || exit
 
 echo -e "\n${GREEN}Ready! Build directory ($BUILD_DIR) created ...${NC}\n"
 
-ssh-keyscan staging >> /home/cicd/.ssh/known_hosts;
-
-## As long as the SSH tunnel isnt working:
-#docker run -d -p 5000:5000 --name local-registry registry:2
+ssh-keyscan staging >> /home/cicd/.ssh/known_hosts
 
 echo -e "\n${GREEN}Creating registry tunnel ...${NC}\n"
 echo "ssh $SSH_TUNNEL -N -f"
 
 ssh $SSH_TUNNEL -N -f
-if [ ! $? -eq 0 ]; then
- echo -e "${RED}Failed to create SSH tunnel.${NC}"
- exit 1
-fi
+check_command "Creating SSH tunnel"
 
 SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
-# tail -f /dev/null
-
 if [ -f "$MAKEFILE" ]; then
-  echo -e "\n${GREEN}Found Makefile! Using it ... ${NC}\n"
+    echo -e "\n${GREEN}Found Makefile! Using it ... ${NC}\n"
 
-  echo "Installing ($BUILD_VERSION@$BRANCH) ..."
-  make -f ${MAKEFILE} install VERSION=$BUILD_VERSION
+    echo "Installing ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} install VERSION=$BUILD_VERSION
+    check_command "Make install"
 
-  echo "Build containers ($BUILD_VERSION@$BRANCH) ..."
-  make -f ${MAKEFILE} build VERSION=$BUILD_VERSION
+    echo "Build containers ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} build VERSION=$BUILD_VERSION
+    check_command "Make build"
 
-  echo "Running test ($BUILD_VERSION@$BRANCH) ..."
-  make -f ${MAKEFILE} test VERSION=$BUILD_VERSION
+    echo "Running test ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} test VERSION=$BUILD_VERSION
+    check_command "Make test"
 
-  trap cleanup_ssh EXIT
-
-  SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
-
-  echo "Pushing/saving containers ($BUILD_VERSION@$BRANCH) ..."
-  make -f ${MAKEFILE} push VERSION=$BUILD_VERSION
+    echo "Pushing/saving containers ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} push VERSION=$BUILD_VERSION
+    check_command "Make push"
 
 else
-  echo -e "\n${GREEN}No Makefile found! Using docker compose ...${NC}\n"
-  echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
+    echo -e "\n${GREEN}No Makefile found! Using docker compose ...${NC}\n"
+    echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
 
-  export VERSION=$BUILD_VERSION;
+    export VERSION=$BUILD_VERSION
 
-  docker compose --profile=install build
-  docker compose build
-  # docker compose --profile=test run app
-  docker compose push
+    docker compose --profile=install build
+    check_command "Docker compose build (install profile)"
+
+    docker compose build
+    check_command "Docker compose build"
+
+    docker compose push
+    check_command "Docker compose push"
 fi
 
 echo -e "\n${GREEN}Finished! Cleaning up and exiting ...${NC}\n"
