@@ -7,7 +7,7 @@ USER root
 RUN apk update --no-cache;
 
 # Install dependencies required for the rest of the installations
-RUN apk add --no-cache \
+RUN apk add --no-cache  --force \
     openssh \
     git \
     curl \
