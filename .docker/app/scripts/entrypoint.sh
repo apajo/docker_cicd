@@ -10,18 +10,22 @@ tree /app
 
 sleep 1
 
+# Start a simple TCP server using socat
 echo -e "\nTest TCP server/socket ... \n"
 
 PORT=8765
-exec 3<>/dev/tcp/localhost/$PORT
-# Check if the socket creation was successful
-if [ $? -ne 0 ]; then
+socat TCP-LISTEN:$PORT,fork EXEC:'/bin/cat' &
+SOCAT_PID=$!
+
+# Give socat some time to start
+sleep 2
+
+# Check if socat command is still running using pgrep
+if pgrep -f "socat TCP-LISTEN:$PORT" > /dev/null; then
+  echo "Successfully created TCP socket at port $PORT"
+else
   echo "Failed to create TCP socket at port $PORT"
   exit 1
-else
-  echo "Successfully created TCP socket at port $PORT"
-  exec 3>&-
-  exec 3<&-
 fi
 
 echo -e "\nEnvironment variable VERSION: ${VERSION} \n"

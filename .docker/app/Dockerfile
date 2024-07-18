@@ -4,7 +4,7 @@ ARG CACHEBUST=1
 FROM alpine:latest
 
 # Install bash
-RUN apk add --no-cache bash tree
+RUN apk add --no-cache bash tree socat
 
 WORKDIR /app
 
