@@ -1,5 +1,6 @@
 services:
   test:
+    container_name: docker_cicd_test
     build:
       context: ./../
       dockerfile: .docker/test/Dockerfile
@@ -16,26 +17,29 @@ services:
     depends_on:
       - staging
       - host
-    profiles: [test]
+    profiles: []
     networks:
       - staging_net
 
   staging:
+    container_name: docker_cicd_test_staging
     build:
       args:
         - SSH_PASSWORD=KollaneHobune
     env_file: !override [../.env.test]
-    profiles: [test]
+    profiles: []
     ports: !reset []
     
   registry:
+    container_name: docker_cicd_test_registry
     env_file: !override [../.env.test]
-    profiles: [test]
+    profiles: []
 
   host:
+    container_name: docker_cicd_test_host
     build:
       args:
         - SSH_PASSWORD=KollaneHobune
     env_file: !override [../.env.test]
-    profiles: [test]
+    profiles: []
     ports: !reset []
