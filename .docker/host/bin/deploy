@@ -56,14 +56,14 @@ git fetch --all  && git pull --all;
 
 function cleanup()
 {
+  cleanup_ssh
+
   if [ "$(docker image ls | grep "localhost:5000")" ]; then
     echo "Clean up images..."
     docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f;
   fi
-
 }
 
-trap cleanup_ssh EXIT
 trap cleanup EXIT
 
 if [ ! -f "$MAKEFILE" ]; then

@@ -39,5 +39,6 @@ services:
 #      - DOCKER_TLS_CERTDIR=/certs
       - DOCKER_TLS_CERTDIR=
     volumes:
+#      - /sys/fs/cgroup:/sys/fs/cgroup
       - ssh_config:/etc/ssh
       - user_ssh:/home/cicd/.ssh

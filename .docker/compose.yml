@@ -18,6 +18,7 @@ services:
       - registry_net
       - staging_net
     volumes:
+      - staging_app_vol:/app
       - staging_dind_vol:/var/lib/docker
       - staging_certs:/certs
     deploy:
@@ -46,12 +47,15 @@ services:
     ports:
       - "1250:22"
     profiles: ["", host]
+    depends_on:
+      - staging
     links:
       - staging
     networks:
-      - staging_net
       - registry_net
+      - staging_net
     volumes:
+      - host_app_vol:/app
       - host_dind_vol:/var/lib/docker
       - host_certs:/certs
     healthcheck:
@@ -88,8 +92,10 @@ services:
       start_period: 5s
 
 volumes:
+  staging_app_vol:
   staging_dind_vol:
   staging_certs:
+  host_app_vol:
   host_dind_vol:
   host_certs:
   user_ssh:
