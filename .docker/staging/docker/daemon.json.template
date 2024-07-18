@@ -11,6 +11,7 @@
         "max-size": "10m"
     },
     "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    "cgroup-parent": "/sys/fs/cgroup",
     "experimental": false,
     "builder": {
         "gc": {
