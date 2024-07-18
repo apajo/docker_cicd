@@ -1,7 +1,6 @@
 #!/bin/bash
 
 addgroup cicd root;
-addgroup cicd rootless;
 addgroup cicd docker
 
 env | grep _ | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /etc/environment

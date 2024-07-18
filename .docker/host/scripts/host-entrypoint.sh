@@ -6,7 +6,6 @@ STAGING_PORT=$(echo $STAGING_SSH_DSN | cut -d':' -f2)
 echo "Host entrypoint..."
 
 addgroup cicd root;
-addgroup cicd rootless;
 addgroup cicd docker
 
 env | grep _ | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/' >> /etc/environment
