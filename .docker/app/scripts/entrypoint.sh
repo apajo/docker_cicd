@@ -4,7 +4,7 @@ echo -e "\nApp is running ... \n"
 
 sleep 1
 
-echo -e "\List files in /app ... \n"
+echo -e "\nList files in /app ... \n"
 
 tree /app
 
