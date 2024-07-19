@@ -1,4 +1,9 @@
 #!/bin/bash
+set -e
+
+# Define color variables
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
 # Description: This script is intended for pushing or deploying a specified version of the project.
 #              It checks for the required version name argument, sets up necessary environment variables,

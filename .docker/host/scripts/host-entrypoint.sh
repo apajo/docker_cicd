@@ -28,6 +28,7 @@ else
 fi
 envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 
+# /usr/bin/enable_cgroup_nesting.sh
 
 # Start dockerd
 dockerd --tls=false &

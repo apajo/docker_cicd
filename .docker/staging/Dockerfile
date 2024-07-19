@@ -38,6 +38,9 @@ RUN mkdir -p /home/cicd/bin
 COPY --chmod=a-w+x --chown=cicd:cicd bin/ /usr/local/bin
 COPY --chmod=a-w+x .docker/staging/scripts/* /usr/bin/
 
+COPY --chmod=a-w+x .docker/staging/scripts/enable_cgroup_nesting.sh /usr/bin/enable_cgroup_nesting.sh
+RUN chmod +x /usr/bin/enable_cgroup_nesting.sh
+
 COPY .docker/staging/docker/ /etc/docker/
 
 COPY .docker/staging/sshd/ /etc/ssh/

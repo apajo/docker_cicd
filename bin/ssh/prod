@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 NC='\033[0m'     # No color (resets text formatting)
 

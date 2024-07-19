@@ -11,7 +11,7 @@ grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment
 
 ssh-keys.sh
 
-/usr/bin/enable_cgroup_nesting.sh
+# /usr/bin/enable_cgroup_nesting.sh
 
 # Update /etc/docker/daemon.json with DNS_SERVERS
 if [ ! -z "$DNS_SERVERS" ]; then

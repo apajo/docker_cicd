@@ -38,6 +38,9 @@ RUN mkdir -p /home/cicd/bin
 COPY --chmod=a-w+x --chown=cicd:cicd bin/ /usr/local/bin
 COPY --chmod=+x .docker/host/scripts/* /usr/bin/
 
+COPY --chmod=a-w+x .docker/staging/scripts/enable_cgroup_nesting.sh /usr/bin/enable_cgroup_nesting.sh
+RUN chmod +x /usr/bin/enable_cgroup_nesting.sh
+
 RUN ssh-keyscan bitbucket.org >> /home/cicd/.ssh/known_hosts \
     ssh-keyscan github.com >> /home/cicd/.ssh/known_hosts
 
