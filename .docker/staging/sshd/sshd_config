@@ -28,7 +28,7 @@ Include /etc/ssh/sshd_config.d/*.conf
 
 # Logging
 #SyslogFacility AUTH
-LogLevel INFO
+LogLevel ERROR
 #LogLevel INFO
 
 # Authentication:
