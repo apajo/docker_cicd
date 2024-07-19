@@ -31,7 +31,13 @@ envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 # /usr/bin/enable_cgroup_nesting.sh
 
 # Start dockerd
-dockerd --tls=false &
+#dockerd --tls=false &
+dockerd-entrypoint.sh &
+
+# Wait for Docker to start
+until docker info >/dev/null 2>&1; do
+  sleep 1
+done
 
 echo -e "\Host is ready ... \n"
 

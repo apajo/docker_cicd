@@ -7,6 +7,13 @@
 ```shell
 docker compose exec -it staging bash -c "docker run --rm busybox nslookup neti.ee"
 ```
+### Test simple docker image run 
+
+```shell
+docker compose exec -it staging bash -c "docker run --rm -it alpine sh"
+```
+
+
 
 ### failed to create shim task: OCI runtime create failed: runc create failed: systemd not running on this host, cannot use systemd cgroups manager:
 

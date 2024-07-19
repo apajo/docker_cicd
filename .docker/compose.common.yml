@@ -35,6 +35,7 @@ services:
 #      - "2376:2376" # Docker daemon port (if needed)
     privileged: true
     environment:
+#      - DOCKER_CGROUPS=/sys/fs/cgroup
 #      - DOCKER_HOST=tcp://localhost:2376  # Set Docker host to the DinD service
 #      - DOCKER_TLS_CERTDIR=/certs
       - DOCKER_TLS_CERTDIR=
@@ -42,3 +43,4 @@ services:
 #      - /sys/fs/cgroup:/sys/fs/cgroup
       - ssh_config:/etc/ssh
       - user_ssh:/home/cicd/.ssh
+      - /var/lib/docker

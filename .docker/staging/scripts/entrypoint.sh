@@ -24,7 +24,13 @@ fi
 envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 
 # Start dockerd
-dockerd --tls=false &
+# dockerd --tls=false &
+dockerd-entrypoint.sh &
+
+# Wait for Docker to start
+until docker info >/dev/null 2>&1; do
+  sleep 1
+done
 
 # Start sshd
 # /usr/sbin/sshd -D -e > /dev/stdout 2>/dev/stderr &

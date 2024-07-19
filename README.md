@@ -172,6 +172,25 @@ docker compose -f .docker/compose.yml -f .docker/compose.test.yml run  --rm --bu
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml  down;
 ```
 
+## Configure host
+
+### Systemd
+
+1) open: sudo nano `/etc/default/grub`
+2) edit: GRUB_CMDLINE_LINUX_DEFAULT="quiet splash systemd.unified_cgroup_hierarchy=1"
+3) run: `sudo update-grub`
+4) reboot
+
+Script:
+```shell
+sudo cp /etc/default/grub /etc/default/grub.bak; \
+sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& systemd.unified_cgroup_hierarchy=1/' /etc/default/grub; \
+sudo update-grub; \
+echo "The system will reboot in 10 seconds to apply the changes. Press Ctrl+C to cancel."; \
+sleep 10; \
+sudo reboot;
+```
+
 ## Detailed instructions
 
 For more read [this](./.docker/README.md)

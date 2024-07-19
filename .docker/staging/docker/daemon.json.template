@@ -10,8 +10,8 @@
         "max-file": "3",
         "max-size": "10m"
     },
-    "exec-opts": ["systemd.cgroupdriver=systemd", "native.cgroupdriver=cgroupfs"],
-    "cgroup-parent": "/sys/fs/cgroup/docker.slice",
+    "exec-opts": ["native.cgroupdriver=systemd"],
+    "cgroup-parent": "/sys/fs/cgroup",
     "experimental": false,
     "builder": {
         "gc": {
