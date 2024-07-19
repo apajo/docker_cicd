@@ -1,5 +1,24 @@
 # 🐳 Docker CI/CD
 
+## Troubleshooting
+
+### Test DNS resolution inside staging container
+
+```shell
+docker compose exec -it staging bash -c "docker run --rm busybox nslookup neti.ee"
+```
+
+### failed to create shim task: OCI runtime create failed: runc create failed: systemd not running on this host, cannot use systemd cgroups manager:
+
+Verify that the filesystems are compatible between the host and the containers
+
+```shell
+cat /etc/docker/daemon.json; \
+docker info | grep -i cgroup; \
+docker compose exec -it staging bash -c "cat /etc/docker/daemon.json"; \
+docker compose exec -it staging bash -c "docker info | grep -i cgroup";
+```
+
 ## Helpers / shortcuts
 
 All Images:

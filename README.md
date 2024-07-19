@@ -8,6 +8,8 @@ The package requires a single `Makefile.cicd` file in the root of your project t
 
 ## Prerequisites
 
+- [Linux Kernel 5.1](https://kernel.org/)
+- [Runc 1.1.12](https://github.com/opencontainers/runc)
 - [GIT 2.34.1](https://git-scm.com/)
 - [Docker 20](https://www.docker.com/)
 - [Docker Compose v2](https://www.docker.com/)
