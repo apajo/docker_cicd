@@ -12,7 +12,7 @@ extract_host() {
 if [ ! -f /home/cicd/.ssh/id_rsa ]; then
   echo "Generating public key..."
 
-  ssh-keygen -t rsa -b 4096 -f /home/cicd/.ssh/id_rsa -N "" -C "cicd@host"
+  ssh-keygen -t rsa -b 4096g -f /home/cicd/.ssh/id_rsa -N "" -C "cicd@host"
 
   cat /home/cicd/.ssh/id_rsa.pub >> /home/cicd/.ssh/authorized_keys
 fi
@@ -20,6 +20,7 @@ fi
 echo "Setting up known hosts..."
 
 ssh-keyscan $(extract_host $GIT_REPO) >> /home/cicd/.ssh/known_hosts;
+ssh-keyscan -p ${STAGING_PORT} ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts
 
 echo "Setting up authorized keys..."
 

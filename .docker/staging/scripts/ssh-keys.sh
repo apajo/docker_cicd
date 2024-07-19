@@ -22,7 +22,7 @@ echo "Setting up known hosts..."
 
 ssh-keyscan 127.0.0.1 >> /home/cicd/.ssh/known_hosts;
 ssh-keyscan localhost >> /home/cicd/.ssh/known_hosts;
-
+ssh-keyscan staging >> /home/cicd/.ssh/known_hosts
 
 echo "Adding GIT repository host: $(extract_host $GIT_REPO) ..."
 ssh-keyscan $(extract_host $GIT_REPO) >> /home/cicd/.ssh/known_hosts;
