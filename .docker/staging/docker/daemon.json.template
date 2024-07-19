@@ -1,5 +1,5 @@
 {
-    "debug": false,
+    "debug": true,
     "dns": [$DNS_SERVERS],
     "max-concurrent-uploads": 5,
     "insecure-registries" : [ "registry:5000", "staging:5000", "localhost:5000"],
@@ -10,8 +10,8 @@
         "max-file": "3",
         "max-size": "10m"
     },
-    "exec-opts": ["native.cgroupdriver=cgroupfs"],
-    "cgroup-parent": "/sys/fs/cgroup",
+    "exec-opts": ["native.cgroupdriver=cgroupfs", "systemd.cgroupdriver=systemd"],
+    "cgroup-parent": "docker.slice",
     "experimental": false,
     "builder": {
         "gc": {
