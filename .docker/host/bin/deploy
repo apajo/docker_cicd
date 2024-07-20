@@ -2,7 +2,14 @@
 set -e
 
 # Define color variables
-RED='\033[0;31m'
+RED='\033[0;31m'     # Red
+GREEN='\033[0;32m'   # Green
+YELLOW='\033[0;33m'  # Yellow
+BLUE='\033[0;34m'    # Blue
+PURPLE='\033[0;35m'  # Purple
+CYAN='\033[0;36m'    # Cyan
+WHITE='\033[0;37m'   # White
+BOLD_WHITE='\033[1;37m'  # White
 NC='\033[0m' # No Color
 
 # Description: This script is intended for pushing or deploying a specified version of the project.
@@ -13,6 +20,19 @@ NC='\033[0m' # No Color
 #        <build_name> is the name of the build/tag to be deployed
 
 export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+
+title1 () {
+  width=$(tput cols)
+  line=$(printf "%${width}s" | tr ' ' '=')
+  echo -e "\n${CYAN}$1${NC}"
+  echo -e "${CYAN}$line${NC}"
+}
+
+title2 () {
+  echo -e "${BOLD_WHITE}$1${NC}"
+}
+
 
 cleanup_ssh() {
     if [ -n "$SSH_PID" ]; then
@@ -52,8 +72,7 @@ MAKEFILE=${MAKE_FILE:-Makefile.cicd}
 STAGING_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT}"
 SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
-
-echo "Cloning ($GIT_REPO) ..."
+title1 "Deploying $VERSION ($GIT_REPO) to staging..."
 git clone --depth=1 ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
 
 cd ${APP_ROOT} || exit;
@@ -76,8 +95,8 @@ if [ ! -f "$MAKEFILE" ]; then
     exit 1
 fi
 
-echo -e "\n${GREEN}Creating staging tunnel ...${NC}\n"
-echo "ssh $SSH_TUNNEL -N -f"
+title1 "Creating staging tunnel ..."
+title2 "ssh $SSH_TUNNEL -N -f"
 
 ssh $SSH_TUNNEL -N -f
 if [ ! $? -eq 0 ]; then
@@ -87,15 +106,18 @@ fi
 
 SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
-echo "Pulling/loading containers ($VERSION) ..."
+title1 "Ready to deploy ($VERSION) ..."
 
 if [ -f "$MAKEFILE" ]; then
+  title2 "Makefile found! Using it ..."
+
   make -f ${MAKE_FILE:-Makefile.cicd} deploy VERSION=$VERSION
 else
-  echo -e "\n${GREEN}No Makefile found! Using docker compose ...${NC}\n"
-  echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
+  title2 "No Makefile found! Using docker compose ..."
 
-  docker compose up --pull -d
+	docker compose pull --quiet
+	docker compose up --no-build -d
+
 fi
 
-echo -e "\n${GREEN}Finished! ${NC}\n"
+title1 "Finished! Cleaning up..."

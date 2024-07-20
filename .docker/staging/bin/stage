@@ -2,7 +2,14 @@
 set -e
 
 # Define color variables
-RED='\033[0;31m'
+RED='\033[0;31m'     # Red
+GREEN='\033[0;32m'   # Green
+YELLOW='\033[0;33m'  # Yellow
+BLUE='\033[0;34m'    # Blue
+PURPLE='\033[0;35m'  # Purple
+CYAN='\033[0;36m'    # Cyan
+WHITE='\033[0;37m'   # White
+BOLD_WHITE='\033[1;37m'  # White
 NC='\033[0m' # No Color
 
 # Description: This script is intended for pushing or deploying a specified version of the project.
@@ -13,6 +20,17 @@ NC='\033[0m' # No Color
 #        <build_name> is the name of the build/tag to be deployed
 
 export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+title1 () {
+  width=$(tput cols)
+  line=$(printf "%${width}s" | tr ' ' '=')
+  echo -e "\n${CYAN}$1${NC}"
+  echo -e "${CYAN}$line${NC}"
+}
+
+title2 () {
+  echo -e "${BOLD_WHITE}$1${NC}"
+}
 
 cleanup_ssh() {
     if [ -n "$SSH_PID" ]; then
@@ -72,19 +90,17 @@ MAKEFILE=${MAKE_FILE:-Makefile.cicd}
 STAGING_URL="${STAGING_USER}@staging"
 SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
-echo -e "\n${BOLD_WHITE}"
-echo "Makefile: $MAKEFILE"
-echo "Branch name: $BRANCH"
-echo "Build name: $BUILD_VERSION"
-echo "Build directory: $BUILD_DIR"
-echo -e "\n${NC}"
+title1 "Staging $VERSION to staging..."
+title2 "Makefile: $MAKEFILE"
+title2 "Branch name: $BRANCH"
+title2 "Build name: $BUILD_VERSION"
+title2 "Build directory: $BUILD_DIR"
 
 # Remove build dir (if exists from previous failed run)
 [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
 
-echo -e "Cloning ${BOLD_WHITE}$GIT_REPO${NC} ... "
+title2 "\nCloning $GIT_REPO ..."
 git clone --depth=1 $GIT_REPO --branch="$BRANCH" "$BUILD_DIR"
-check_command "Git clone"
 
 if [ ! -d "$BUILD_DIR" ]; then
     echo -e "${BOLD_WHITE}Error: Directory $BUILD_DIR does not exist.${NC}"
@@ -93,11 +109,9 @@ fi
 
 cd $BUILD_DIR || exit
 
-echo -e "\n${GREEN}Ready! Build directory ($BUILD_DIR) created ...${NC}\n"
-
 ssh-keyscan staging >> /home/cicd/.ssh/known_hosts
 
-echo -e "\n${GREEN}Creating registry tunnel ...${NC}\n"
+title2 "Creating registry tunnel ..."
 echo "ssh $SSH_TUNNEL -N -f"
 
 ssh $SSH_TUNNEL -N -f
@@ -105,8 +119,10 @@ check_command "Creating SSH tunnel"
 
 SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
+title1 "Ready to stage ..."
+
 if [ -f "$MAKEFILE" ]; then
-    echo -e "\n${GREEN}Found Makefile! Using it ... ${NC}\n"
+    title2 "Makefile found! Using it ..."
 
     echo "Installing ($BUILD_VERSION@$BRANCH) ..."
     make -f ${MAKEFILE} install VERSION=$BUILD_VERSION
@@ -125,19 +141,20 @@ if [ -f "$MAKEFILE" ]; then
     check_command "Make push"
 
 else
-    echo -e "\n${GREEN}No Makefile found! Using docker compose ...${NC}\n"
-    echo -e "\n${RED}This feature is not fully implemented yet!${NC}\n"
+    title2 "No Makefile found! Using docker compose ..."
 
     export VERSION=$BUILD_VERSION
-
-    docker compose --profile=install build
-    check_command "Docker compose build (install profile)"
 
     docker compose build
     check_command "Docker compose build"
 
-    docker compose push
+    docker compose --profile=test run --remove-orphans --rm tests;
+    check_command "Docker compose build (install profile)"
+
+    docker compose push --quiet
     check_command "Docker compose push"
+
+    docker compose --profile=test down;
 fi
 
-echo -e "\n${GREEN}Finished! Cleaning up and exiting ...${NC}\n"
+title1 "Finished! Cleaning up..."
