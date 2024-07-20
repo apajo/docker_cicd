@@ -95,7 +95,7 @@ if [ ! -f "$MAKEFILE" ]; then
     exit 1
 fi
 
-title1 "Creating staging tunnel ..."
+title1 "Creating registry tunnel ..."
 title2 "ssh $SSH_TUNNEL -N -f"
 
 ssh $SSH_TUNNEL -N -f

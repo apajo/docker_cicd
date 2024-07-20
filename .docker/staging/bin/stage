@@ -111,7 +111,7 @@ cd $BUILD_DIR || exit
 
 ssh-keyscan staging >> /home/cicd/.ssh/known_hosts
 
-title2 "Creating registry tunnel ..."
+title1 "Creating registry tunnel ..."
 echo "ssh $SSH_TUNNEL -N -f"
 
 ssh $SSH_TUNNEL -N -f
