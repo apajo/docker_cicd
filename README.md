@@ -67,12 +67,14 @@ services:
   staging:
     ports: !override
       - "1252:22"
+      - "8080:80"
     dns:
       - 8.8.8.8
       - 8.8.4.4
 ```
 
 This example will override the default port for the staging server.
+Add here your custom ports, volumes, etc.
 
 ### Run the servers
 

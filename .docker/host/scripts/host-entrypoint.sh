@@ -14,10 +14,6 @@ chmod +x /etc/environment
 # Update /etc/profile to export environment variables except PUBLIC_KEY
 grep -qxF '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment | grep -v PUBLIC_KEY | xargs)' /etc/profile || echo '[ ! -f /etc/environment ] || export $(sed 's/#.*//g' /etc/environment | grep -v PUBLIC_KEY | xargs)' >> /etc/profile
 
-wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
-
-ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
-
 # Update /etc/docker/daemon.json with DNS_SERVERS
 if [ ! -z "$DNS_SERVERS" ]; then
   # Convert DNS_SERVERS to a quoted comma-separated JSON-like array
@@ -38,6 +34,10 @@ dockerd-entrypoint.sh &
 until docker info >/dev/null 2>&1; do
   sleep 1
 done
+
+# Wait for staging server
+wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
+ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 
 echo -e "\Host is ready ... \n"
 
