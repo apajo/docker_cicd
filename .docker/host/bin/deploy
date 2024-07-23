@@ -79,8 +79,10 @@ cd ${APP_ROOT} || exit;
 git fetch --all  && git pull --all;
 
 if [ -d "/var/docker_cicd/env" ]; then
-  echo "Copying environment files...";
-  cp -R /var/docker_cicd/env/* $APP_ROOT;
+  if [ "$(ls -A /var/docker_cicd/env)" ]; then
+    echo "Copying environment files ...";
+    cp -R /var/docker_cicd/env/* $APP_ROOT;
+  fi
 fi
 
 function cleanup()
