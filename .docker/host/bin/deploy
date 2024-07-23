@@ -81,7 +81,7 @@ git fetch --all  && git pull --all;
 if [ -d "/var/docker_cicd/env" ]; then
   if [ "$(ls -A /var/docker_cicd/env)" ]; then
     echo "Copying environment files ...";
-    cp -R /var/docker_cicd/env/* $APP_ROOT;
+    cp -R /var/docker_cicd/env/* "$BUILD_DIR";
   fi
 fi
 

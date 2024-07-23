@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # Define color variables
 RED='\033[0;31m'     # Red
@@ -110,11 +109,11 @@ fi
 if [ -d "/var/docker_cicd/env" ]; then
   if [ "$(ls -A /var/docker_cicd/env)" ]; then
     echo "Copying environment files ...";
-    cp -R /var/docker_cicd/env/* $BUILD_DIR;
+    cp -R /var/docker_cicd/env/* "$BUILD_DIR";
   fi
 fi
 
-cd $BUILD_DIR || exit
+cd $BUILD_DIR || exit;
 
 ssh-keyscan staging >> /home/cicd/.ssh/known_hosts
 
