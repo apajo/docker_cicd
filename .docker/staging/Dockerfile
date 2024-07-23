@@ -49,6 +49,8 @@ COPY .docker/staging/sshd/banner/staging /etc/motd
 
 RUN touch /var/log/btmp
 
+RUN mkdir -p /var/docker_cicd/env
+
 RUN if [ -n "${SSH_PASSWORD}" ]; then echo "cicd:${SSH_PASSWORD}" | chpasswd; fi
 
 # Staging build step

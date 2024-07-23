@@ -31,6 +31,8 @@ RUN adduser -g cicd -g rootless -D cicd -D docker; \
     chmod 700 /home/cicd/.ssh && chmod 600 /home/cicd/.ssh/authorized_keys && \
     usermod -p '*' -s /bin/bash cicd
 
+RUN mkdir -p /var/docker_cicd/env
+
 RUN passwd -u cicd; \
     ssh-keygen -A;
 

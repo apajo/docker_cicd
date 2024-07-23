@@ -76,6 +76,11 @@ services:
 This example will override the default port for the staging server.
 Add here your custom ports, volumes, etc.
 
+#### Environment specific files
+
+All environment specific files are located in `env` directory.
+Everything in the `env` directory is copied to the staging and host servers.
+
 ### Run the servers
 
 ```shell

@@ -78,6 +78,11 @@ git clone --depth=1 ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
 cd ${APP_ROOT} || exit;
 git fetch --all  && git pull --all;
 
+if [ -d "/var/docker_cicd/env" ]; then
+  echo "Copying environment files...";
+  cp -R /var/docker_cicd/env/* $APP_ROOT;
+fi
+
 function cleanup()
 {
   cleanup_ssh

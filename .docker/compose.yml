@@ -18,6 +18,7 @@ services:
       - registry_net
       - staging_net
     volumes:
+      - ../env:/var/docker_cicd/env:ro
       - staging_app_vol:/app
       - staging_dind_vol:/var/lib/docker
       - staging_certs:/certs
@@ -47,6 +48,7 @@ services:
       - registry_net
       - staging_net
     volumes:
+      - ../env:/var/docker_cicd/env:ro
       - host_app_vol:/app
       - host_dind_vol:/var/lib/docker
       - host_certs:/certs
