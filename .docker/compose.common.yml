@@ -8,11 +8,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.25"
-          memory: 512M
+          cpus: "2"
+          memory: 2GB
         reservations:
-          cpus: "0.10"
-          memory: 128M
+          cpus: "1"
+          memory: 512M
 
   host_base:
     build:

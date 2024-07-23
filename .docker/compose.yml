@@ -21,14 +21,6 @@ services:
       - staging_app_vol:/app
       - staging_dind_vol:/var/lib/docker
       - staging_certs:/certs
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 4GB
-        reservations:
-          cpus: "1"
-          memory: 1G
     healthcheck:
       test: nc -z localhost 22 || exit 1
       interval: 30s
@@ -90,6 +82,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 512M
+        reservations:
+          cpus: "0.10"
+          memory: 128M
 
 volumes:
   staging_app_vol:
