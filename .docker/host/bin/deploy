@@ -23,7 +23,12 @@ export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 
 title1 () {
-  width=$(tput cols)
+  width=$(tput cols 2>/dev/null)
+
+  if [ $? -ne 0 ]; then
+      width=30
+  fi
+
   line=$(printf "%${width}s" | tr ' ' '=')
   echo -e "\n${CYAN}$1${NC}"
   echo -e "${CYAN}$line${NC}"
@@ -78,10 +83,13 @@ git clone --depth=1 ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
 cd ${APP_ROOT} || exit;
 git fetch --all  && git pull --all;
 
-if [ -d "/var/docker_cicd/env" ]; then
-  if [ "$(ls -A /var/docker_cicd/env)" ]; then
-    echo "Copying environment files ...";
-    cp -R /var/docker_cicd/env/. "$APP_ROOT";
+# Check if the git commands were successful
+if [ $? -eq 0 ]; then
+  if [ -d "/var/docker_cicd/env" ]; then
+    if [ "$(ls -A /var/docker_cicd/env)" ]; then
+      echo "Copying environment files ...";
+      cp -R /var/docker_cicd/env/. "$APP_ROOT";
+    fi
   fi
 fi
 
