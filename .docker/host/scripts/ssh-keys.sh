@@ -20,7 +20,7 @@ fi
 echo "Setting up known hosts..."
 
 ssh-keyscan $(extract_host $GIT_REPO) >> /home/cicd/.ssh/known_hosts;
-ssh-keyscan -p ${STAGING_PORT} ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts
+ssh-keyscan -p ${STAGING_PORT:-22} ${STAGING_HOST:-staging} >> /home/cicd/.ssh/known_hosts
 
 echo "Setting up authorized keys..."
 
