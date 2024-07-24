@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Resolve paths
+export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+source $SCRIPTPATH/.common
+
+print "\n${APP_NAME}: $@ ..."
+hr
+
+run_command docker compose exec -it staging sh -c "$@";
+
+hr
