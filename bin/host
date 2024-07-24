@@ -1,12 +1,16 @@
 #!/bin/bash
 
+# Check for arguments
+if [ $# -eq 0 ]; then
+  docker compose exec -it host sh
+  exit
+fi
+
 # Resolve paths
 export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 source $SCRIPTPATH/.common
 
 print "\n${APP_NAME}: $@ ..."
 hr
-
-run_command docker compose exec -it --user cicd host sh -c "$@";
-
+  run_command docker compose exec -it --user cicd host sh -c "$@";
 hr
