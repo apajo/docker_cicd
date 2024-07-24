@@ -73,6 +73,8 @@ services:
         required: true
       - path: ../.env.local
         required: false
+    environment:
+      - REGISTRY_LOG_LEVEL=warn
     profiles: ["", staging]
     extra_hosts:
       - "host.docker.internal:host-gateway"

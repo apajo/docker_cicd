@@ -1,5 +1,6 @@
 {
-    "debug": true,
+    "debug": false,
+    "log-level": "warn",
     "dns": [$DNS_SERVERS],
     "max-concurrent-uploads": 5,
     "insecure-registries" : [ "registry:5000", "staging:5000", "localhost:5000"],
