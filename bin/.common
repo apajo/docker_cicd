@@ -5,6 +5,8 @@ set -e
 export APP_NAME=$(basename "$0")
 export ROOT="$(pwd)"
 
+TERM="${TERM:-dumb}"
+
 NC='\033[0m'     # No color (resets text formatting)
 
 # Regular Colors
@@ -44,7 +46,11 @@ run_command () {
 }
 
 hr () {
-  width=30
+  width=$(tput cols 2>/dev/null)
+
+  if [ $? -ne 0 ]; then
+      width=30
+  fi
 
   line=$(printf "%${width}s" | tr ' ' '=')
 
