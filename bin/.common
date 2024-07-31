@@ -44,7 +44,12 @@ run_command () {
 }
 
 hr () {
-  width=$(tput cols)
+  width=$(tput cols 2>/dev/null)
+
+  if [ $? -ne 0 ]; then
+      width=30
+  fi
+
   line=$(printf "%${width}s" | tr ' ' '=')
 
   echo -e "${RND_COL}$line${NC}"
