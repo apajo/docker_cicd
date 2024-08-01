@@ -46,11 +46,8 @@ run_command () {
 }
 
 hr () {
-  width=$(tput cols 2>/dev/null)
-
-  if [ $? -ne 0 ]; then
-      width=80
-  fi
+  # width=$(tput cols 2>/dev/null)
+  width=80
 
   line=$(printf "%${width}s" | tr ' ' '=')
 
