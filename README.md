@@ -16,20 +16,22 @@ The package requires a single `Makefile.cicd` file in the root of your project t
 
 ## Overview
 
-This package consists of 3 different docker profiles/environments:
-* `staging` - for testing, building and storage of your project
-* `test` - for testing this package
+![](./docs/components.png)
+
+Components:
+* `Host` - Contains your running application
+* `Staging` - Builds, tests and and sends Docker images to registry
+* `Registry` - Private Docker image regsitry
 
 ### Flow diagram / components
 
-![Project Logo](./docs/pipeline.png)
+![](./docs/pipeline.png)
 
-Components:
-
-* Pushing - Configure your repo to run a pipeline/runners
-* Git repository - Your source code repository
-* Staging server - This is where your application will be tested and built (and docker images stored)
-* Host server - This is where your application will be running (and updated)
+1) Push (GIT) - If your code is pushed to the repository, the pipeline is triggered
+2) Deploy - Pipeline  triggers staging sequence in the staging server
+3) Clone - Staging server clones your repository, buils, tests and pushes the images to the registry
+4) Deploy - Pipeline triggers deploy sequence in the host server
+5) Pull - Host server pulls the images from the registry and runs them
 
 ## Getting started
 
@@ -55,8 +57,6 @@ Create `.env.local` to override `.env` parameters.
 | `STAGING_PORT`     | Port for the staging environment              | `22`                                       |
 | `STAGING_USER`     | User for the staging environment              | `cicd`                                     |
 
-
-
 #### compose.override.yml
 
 _Additionally, you can create `compose.override.yml` to override Docker compose parameters.
@@ -71,15 +71,19 @@ services:
     dns:
       - 8.8.8.8
       - 8.8.4.4
+    extra_hosts:
+      - "registry:external.registry.com"
 ```
 
-This example will override the default port for the staging server.
-Add here your custom ports, volumes, etc.
+This example will override the default configuration of your staging server.
+* ports         - overrides default staging server ports
+* dns           - overrides default DNS servers
+* extra_hosts   - forwards registry hostname to external.registry.com
 
 #### Environment specific files
 
 All environment specific files are located in `env` directory.
-Everything in the `env` directory is copied to the staging and host servers.
+Everything in the `env` directory is copied to toy your project's root directory before building it.
 
 ### Run the servers
 
@@ -87,19 +91,11 @@ Everything in the `env` directory is copied to the staging and host servers.
 docker compose up -d
 ```
 
-#### Run only staging server
+Run each server individually (to run the services in different networks):
 
 ```shell
-docker compose --profile=staging up -d
+* docker compose up -d [service]
 ```
-
-#### Run only host server
-
-```shell
-docker compose --profile=host up -d
-```
-
-__Note!__ You can setup ad many hosts as needed (test, prelive, production, etc.) 
 
 ### Requirements for your project
 
@@ -169,33 +165,6 @@ ssh cicd@production bash -c "deploy master 12345"
 ```shell
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml run --rm --remove-orphans test;
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml down
-```
-
-Force re-build:
-
-```shell
-docker compose -f .docker/compose.yml -f .docker/compose.test.yml  down --volumes; \
-docker compose -f .docker/compose.yml -f .docker/compose.test.yml run  --rm --build --remove-orphans test; \
-docker compose -f .docker/compose.yml -f .docker/compose.test.yml  down;
-```
-
-## Configure host
-
-### Systemd
-
-1) open: sudo nano `/etc/default/grub`
-2) edit: GRUB_CMDLINE_LINUX_DEFAULT="quiet splash systemd.unified_cgroup_hierarchy=1"
-3) run: `sudo update-grub`
-4) reboot
-
-Script:
-```shell
-sudo cp /etc/default/grub /etc/default/grub.bak; \
-sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& systemd.unified_cgroup_hierarchy=1/' /etc/default/grub; \
-sudo update-grub; \
-echo "The system will reboot in 10 seconds to apply the changes. Press Ctrl+C to cancel."; \
-sleep 10; \
-sudo reboot;
 ```
 
 ## Detailed instructions
