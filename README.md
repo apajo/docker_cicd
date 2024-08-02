@@ -47,15 +47,16 @@ git clone https://github.com/apajo/docker_cicd.git
 
 Create `.env.local` to override `.env` parameters.
 
+| Variable                 | Description                                   | Default value                              |
+|--------------------------|-----------------------------------------------|--------------------------------------------|
+| `GIT_REPO`               | URL of you Git repository                     | `https://github.com/apajo/docker_cicd.git` |
+| `PUBLIC_KEY`             | Authorized key for staging/host servers       |                                            |
+| `MAKE_FILE`              | Path/name of your CI/CD make file             | `Makefile.cicd`                            |
+| `STAGING_SSH_DSN`        | Host for the staging environment              | `cicd@staging:22`                          |
+| `REGISTRY_KEEP_TAGS_COUNT`| Number of tags to keep in the registry        | `10`                                       |
+| `REGISTRY_KEEP_TAGS`     | Tags to keep in the registry                  | `"stable latest"`                          |
+| `REGISTRY_KEEP_TAGS_LIKE`| Pattern of tags to keep in the registry       | `live`                                     |
 
-| Variable           | Description                                   | Default value                              |
-|--------------------|-----------------------------------------------|--------------------------------------------|
-| `GIT_REPO`         | URL of you Git repository                     | `https://github.com/apajo/docker_cicd.git` |
-| `PUBLIC_KEY`       | Authorized key for staging/host servers |                                            |
-| `MAKE_FILE`        | Path/name of your CI/CD make file             | `Makefile.cicd`                            |
-| `STAGING_HOST`     | Host for the staging environment              | `staging`                                  |
-| `STAGING_PORT`     | Port for the staging environment              | `22`                                       |
-| `STAGING_USER`     | User for the staging environment              | `cicd`                                     |
 
 #### compose.override.yml
 
