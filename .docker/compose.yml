@@ -80,6 +80,8 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - registry_net
+    volumes:
+      - registry_dind_vol:/var/lib/docker
     healthcheck:
       test: nc -z localhost 5000 || exit 1
       interval: 30s
@@ -101,6 +103,7 @@ volumes:
   staging_certs:
   host_app_vol:
   host_dind_vol:
+  registry_dind_vol:
   host_certs:
   user_ssh:
   ssh_config:
