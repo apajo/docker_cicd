@@ -17,7 +17,7 @@ RUN ssh-keygen -A
 WORKDIR /home/cicd
 
 RUN mkdir -p /home/cicd/bin
-COPY --chmod=a-w+x --chown=cicd:cicd bin/ /home/cicd/bin
+COPY --chmod=a-w+x --chown=cicd:cicd .docker/test/bin/ /home/cicd/bin
 COPY --chmod=a-w+x --chown=cicd:cicd  .docker/test/scripts/* /usr/bin/
 
 RUN passwd -u cicd

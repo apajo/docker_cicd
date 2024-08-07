@@ -33,6 +33,5 @@ until docker info >/dev/null 2>&1; do
 done
 
 # Start sshd
-# /usr/sbin/sshd -D -e > /dev/stdout 2>/dev/stderr &
 
 exec "$@"
