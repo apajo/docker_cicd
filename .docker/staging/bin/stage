@@ -155,20 +155,20 @@ if [ -f "$MAKEFILE" ]; then
     check_command "Make push"
 
 else
-    title2 "No Makefile found! Using docker compose ..."
+    title2 "Runnig docker compose commands..."
 
     export VERSION=$BUILD_VERSION
 
     docker compose build
     check_command "Docker compose build"
 
-    docker compose --profile=test run --remove-orphans --rm tests;
-    check_command "Docker compose build (install profile)"
+    docker compose run --remove-orphans --rm $TESTS_SERVICE;
+    check_command "Running tests"
 
     docker compose push --quiet
     check_command "Docker compose push"
 
-    docker compose --profile=test down;
+    docker compose down;
 fi
 
 title1 "Finished! Cleaning up..."

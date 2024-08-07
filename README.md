@@ -56,6 +56,8 @@ Create `.env.local` to override `.env` parameters.
 | `REGISTRY_KEEP_TAGS_COUNT`| Number of tags to keep in the registry        | `10`                                       |
 | `REGISTRY_KEEP_TAGS`     | Tags to keep in the registry                  | `"stable latest"`                          |
 | `REGISTRY_KEEP_TAGS_LIKE`| Pattern of tags to keep in the registry       | `live`                                     |
+| `TESTS_SERVICE`| Name of the docker compose service to be run in tests phase       | `tests`                                     |
+
 
 
 #### compose.override.yml
@@ -100,56 +102,10 @@ Run each server individually (to run the services in different networks):
 
 ### Requirements for your project
 
-> __NB!__ Make sure tou have set up your __Makefile.cicd__ file in your git repository.
+Your project needs to have docker compose (`compose.yml` or `docker-compose.yml`) in it's root directory.
 
-__NB!__ Your git repository root directory has to have a
-__Makefile.cicd__ file with the following targets:
-* install
-* build
-* test
-* push
-* deploy
 
-Example __Makefile.cicd__:
-
-```shell
-.PHONY: install build test push deploy help
-.DEFAULT_GOAL := install
-SHELL := /bin/bash
-
-# Default targets
-all: install build
-
-# Require VERSION veriable
-ifeq ($(filter help,$(MAKECMDGOALS)),)
-    ifndef VERSION
-        $(error VERSION is not set. Please set it by using VERSION=x.y.z);
-    endif
-endif
-
-help:               ## Show this help.
-	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
-
-install:            ## Install script
-	docker compose --profile=build build --no-cache --with-dependencies
-
-build:              ## Build script
-	docker compose build --no-cache --with-dependencies
-
-test:               ## Test script
-	docker compose --profile=test run --build --remove-orphans --rm test
-
-push:               ## Push script
-	docker compose push
-
-deploy:             ## Pull/run script
-	docker compose pull
-	docker compose up
-
-```
-
-__VERSION__ variable is defined for the deployment process.
-
+For more (customize build commands etc) read [this](./docs/README.md)
 
 ### Run in pipeline
 

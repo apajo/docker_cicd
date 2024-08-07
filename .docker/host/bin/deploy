@@ -127,7 +127,7 @@ if [ -f "$MAKEFILE" ]; then
 
   make -f ${MAKE_FILE:-Makefile.cicd} deploy VERSION=$VERSION
 else
-  title2 "No Makefile found! Using docker compose ..."
+  title2 "Runnig docker compose commands..."
 
 	docker compose pull --quiet
 	docker compose up --no-build -d
