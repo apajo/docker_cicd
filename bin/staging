@@ -2,7 +2,7 @@
 
 # Check for arguments
 if [ $# -eq 0 ]; then
-  docker compose exec -it --user cicd staging sh
+  docker compose exec -it --user cicd staging bash
   exit $?
 fi
 

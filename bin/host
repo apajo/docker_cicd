@@ -13,4 +13,5 @@ source $SCRIPTPATH/.common
 print "\n${APP_NAME}: $@ ..."
 hr
   run_command docker compose exec -it --user cicd host sh -c "$@";
+  exit $?
 hr
