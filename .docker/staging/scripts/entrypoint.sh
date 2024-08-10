@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 addgroup cicd root;
 addgroup cicd docker
 
