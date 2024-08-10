@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 
 export APP_NAME=$(basename "$0")
 export ROOT="$(pwd)"
@@ -41,10 +40,12 @@ print () {
   echo -e "${RND_COL}$@${NC}"
 }
 
-run_command () {
-  output=$("$@" 2>&1)
+run_command () { echo "$@"
+  output=$("$@")
   local cmd_exit_code=$?  # Capture the exit code of the command
+  echo "OUT: $output"  
   echo "$output" | sed -e "s/^/$(printf ${RND_COL}${APP_NAME}) | $(printf  ${NC})/"
+  return $cmd_exit_code
 }
 
 hr () {
