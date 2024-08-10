@@ -18,6 +18,7 @@ services:
       - registry_net
       - staging_net
     volumes:
+      - ./staging/bin/stage:/usr/local/bin/stage
       - ../env:/var/docker_cicd/env:ro
       - staging_app_vol:/app
       - staging_dind_vol:/var/lib/docker
@@ -48,10 +49,11 @@ services:
       - registry_net
       - staging_net
     volumes:
-      - ../env:/var/docker_cicd/env:ro
-      - host_app_vol:/app
-      - host_dind_vol:/var/lib/docker
-      - host_certs:/certs
+      - ./host/bin/deploy:/usr/local/bin/deploy
+      # - ../env:/var/docker_cicd/env:ro
+      # - host_app_vol:/app
+      # - host_dind_vol:/var/lib/docker
+      # - host_certs:/certs
     healthcheck:
       test: nc -z localhost 22 || exit 1
       interval: 30s
@@ -82,6 +84,7 @@ services:
       - registry_net
     volumes:
       - registry_dind_vol:/var/lib/docker
+      - registry_dind_vol:/var/lib/registry
     healthcheck:
       test: nc -z localhost 5000 || exit 1
       interval: 30s
