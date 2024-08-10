@@ -26,6 +26,9 @@ fi
 envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 
 # Start Docker daemon in the background
+#dockerd --tls=false &
+# dockerd-entrypoint.sh &
+
 dockerd-entrypoint.sh &
 
 # Wait for Docker to start

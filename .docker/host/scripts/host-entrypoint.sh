@@ -28,17 +28,16 @@ envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 
 # /usr/bin/enable_cgroup_nesting.sh
 
-# Start dockerd
+# Start Docker daemon in the background
 #dockerd --tls=false &
 # dockerd-entrypoint.sh &
 
-# Start Docker daemon in the background
 dockerd-entrypoint.sh &
 
 # Wait for Docker to start
-until docker info >/dev/null 2>&1; do
-  sleep 1
-done
+# until docker info >/dev/null 2>&1; do
+#   sleep 1;
+# done
 
 # Wait for staging server
 wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
