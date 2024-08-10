@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x;
 
 # Define color variables
 RED='\033[0;31m'     # Red
@@ -170,6 +171,6 @@ else
     docker compose --profile=test down;
 fi
 
-docker system prune -f
+docker system prune -fdocker system prune -f
 
 title1 "Finished! Cleaning up..."
