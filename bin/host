@@ -29,8 +29,6 @@ done
 # Trim leading/trailing whitespace from command
 command=$(echo "$command" | xargs)
 
-echo "CMD: $command"
-echo "SRVC: $service"
 
 # Execute the command based on the presence of --service argument
 if [ -z "$service" ]; then
