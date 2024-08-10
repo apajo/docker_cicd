@@ -42,7 +42,9 @@ print () {
 }
 
 run_command () {
-  "$@" 2>&1 | sed -e "s/^/$(printf ${RND_COL}${APP_NAME}) | $(printf  ${NC})/"
+  output=$("$@" 2>&1)
+  local cmd_exit_code=$?  # Capture the exit code of the command
+  echo "$output" | sed -e "s/^/$(printf ${RND_COL}${APP_NAME}) | $(printf  ${NC})/"
 }
 
 hr () {

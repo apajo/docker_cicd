@@ -3,7 +3,7 @@
 # Check for arguments
 if [ $# -eq 0 ]; then
   docker compose exec -it --user cicd host sh
-  exit $?
+  exit
 fi
 
 # Resolve paths
@@ -13,5 +13,4 @@ source $SCRIPTPATH/.common
 print "\n${APP_NAME}: $@ ..."
 hr
   run_command docker compose exec -it --user cicd host sh -c "$@";
-  exit $?
 hr
