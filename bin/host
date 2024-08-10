@@ -40,12 +40,10 @@ if [ -z "$service" ]; then
     exit_code=$?
   fi
 else
-  echo "RESULT: docker compose exec -it --user=cicd host sh -c \"docker compose exec -it $service sh -c '$command'\""
-
   docker compose exec -it --user=cicd host sh -c "docker compose exec -it $service sh -c '$command'"
   exit_code=$?
 fi
 
 hr
 
-exit $exit_code
+# exit $exit_code
