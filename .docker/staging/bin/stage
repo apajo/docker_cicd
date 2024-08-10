@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e;
 
 # Define color variables
 RED='\033[0;31m'     # Red
@@ -47,11 +46,17 @@ cleanup_ssh() {
 
 cleanup() {
     echo "Clean up build dir ($VERSION)..."
-    [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :;
-
+    [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
     if [ "$(docker image ls | grep "localhost:5000")" ]; then
         echo "Clean up images..."
         docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f
+    fi
+}
+
+check_command() {
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Error: $1 failed!${NC}"
+        exit 1
     fi
 }
 
@@ -102,19 +107,16 @@ title2 "Build directory: $BUILD_DIR"
 title2 "\nCloning $GIT_REPO ..."
 git clone --depth=1 $GIT_REPO --branch="$BRANCH" "$BUILD_DIR"
 
-# Check if the git commands were successful
-if [ $? -eq 0 ]; then
-  if [ -d "/var/docker_cicd/env" ]; then
-    if [ "$(ls -A /var/docker_cicd/env)" ]; then
-      echo "Copying environment files ...";
-      cp -R /var/docker_cicd/env/. "$APP_ROOT";
-    fi
-  fi
-fi
-
 if [ ! -d "$BUILD_DIR" ]; then
     echo -e "${BOLD_WHITE}Error: Directory $BUILD_DIR does not exist.${NC}"
     exit 1
+fi
+
+if [ -d "/var/docker_cicd/env" ]; then
+  if [ "$(ls -A /var/docker_cicd/env)" ]; then
+    echo "Copying environment files ...";
+    cp -R /var/docker_cicd/env/. "$BUILD_DIR";
+  fi
 fi
 
 cd $BUILD_DIR || exit;
@@ -125,6 +127,7 @@ title1 "Creating registry tunnel ..."
 echo "ssh $SSH_TUNNEL -N -f"
 
 ssh $SSH_TUNNEL -N -f
+check_command "Creating SSH tunnel"
 
 SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
@@ -135,27 +138,35 @@ if [ -f "$MAKEFILE" ]; then
 
     echo "Installing ($BUILD_VERSION@$BRANCH) ..."
     make -f ${MAKEFILE} install VERSION=$BUILD_VERSION
+    check_command "Make install"
 
     echo "Build containers ($BUILD_VERSION@$BRANCH) ..."
     make -f ${MAKEFILE} build VERSION=$BUILD_VERSION
+    check_command "Make build"
 
     echo "Running test ($BUILD_VERSION@$BRANCH) ..."
     make -f ${MAKEFILE} test VERSION=$BUILD_VERSION
+    check_command "Make test"
 
     echo "Pushing/saving containers ($BUILD_VERSION@$BRANCH) ..."
     make -f ${MAKEFILE} push VERSION=$BUILD_VERSION
+    check_command "Make push"
+
 else
-    title2 "Runnig docker compose commands..."
+    title2 "No Makefile found! Using docker compose ..."
 
     export VERSION=$BUILD_VERSION
 
     docker compose build
+    check_command "Docker compose build"
 
-    docker compose run --remove-orphans --rm $TESTS_SERVICE;
+    docker compose --profile=test run --remove-orphans --rm tests;
+    check_command "Docker compose build (install profile)"
 
     docker compose push --quiet
+    check_command "Docker compose push"
 
-    docker compose down;
+    docker compose --profile=test down;
 fi
 
 title1 "Finished! Cleaning up..."
