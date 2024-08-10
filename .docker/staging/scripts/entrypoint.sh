@@ -32,9 +32,9 @@ envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 dockerd-entrypoint.sh &
 
 # Wait for Docker to start
-until docker info >/dev/null 2>&1; do
-  sleep 1
-done
+# until docker info >/dev/null 2>&1; do
+#   sleep 1
+# done
 
 # Start SSHD in the foreground
 exec /usr/sbin/sshd -D -e
