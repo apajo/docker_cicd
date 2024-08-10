@@ -54,6 +54,8 @@ cleanup() {
         echo "Clean up images..."
         docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f
     fi
+
+    docker system prune -f
 }
 
 check_command() {
@@ -170,7 +172,5 @@ else
 
     docker compose --profile=test down;
 fi
-
-docker system prune -fdocker system prune -f
 
 title1 "Finished! Cleaning up..."
