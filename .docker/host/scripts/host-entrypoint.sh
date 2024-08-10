@@ -32,10 +32,16 @@ envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 #dockerd --tls=false &
 # dockerd-entrypoint.sh &
 
+# Start Docker daemon in the background
+dockerd-entrypoint.sh &
+
 # Wait for Docker to start
-# until docker info >/dev/null 2>&1; do
-#   sleep 1
-# done
+until docker info >/dev/null 2>&1; do
+  sleep 1
+done
+
+# Start SSHD in the foreground
+exec /usr/sbin/sshd -D -e
 
 # Wait for staging server
 wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
@@ -44,4 +50,4 @@ ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 echo -e "\Host is ready ... \n"
 
 
-exec dockerd-entrypoint.sh "$@"
+# exec "$@"
