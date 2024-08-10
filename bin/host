@@ -33,14 +33,14 @@ command=$(echo "$command" | xargs)
 # Execute the command based on the presence of --service argument
 if [ -z "$service" ]; then
   if [ -z "$command" ]; then
-    docker compose exec -it --user=cicd host sh
+    docker compose exec -i --user=cicd host sh
     exit_code=$?
   else
-    docker compose exec -it --user=cicd host sh -c "$command"
+    docker compose exec -i --user=cicd host sh -c "$command"
     exit_code=$?
   fi
 else
-  docker compose exec -it --user=cicd host sh -c "docker compose exec -it $service sh -c '$command'"
+  docker compose exec -i --user=cicd host sh -c "docker compose exec -it $service sh -c '$command'"
   exit_code=$?
 fi
 

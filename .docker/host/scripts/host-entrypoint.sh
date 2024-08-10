@@ -44,4 +44,4 @@ ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 echo -e "\Host is ready ... \n"
 
 
-exec "$@"
+exec dockerd-entrypoint.sh  "$@"

@@ -34,4 +34,4 @@ envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 
 # Start sshd
 
-exec "$@"
+exec dockerd-entrypoint.sh  "$@"
