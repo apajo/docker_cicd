@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# set -x;
 
 # Define color variables
 RED='\033[0;31m'     # Red
@@ -135,8 +134,6 @@ SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
 title1 "Ready to stage ..."
 
-docker system prune -f;
-
 if [ -f "$MAKEFILE" ]; then
     title2 "Makefile found! Using it ..."
 
@@ -172,5 +169,7 @@ else
 
     docker compose --profile=test down;
 fi
+
+docker system prune -f
 
 title1 "Finished! Cleaning up..."
