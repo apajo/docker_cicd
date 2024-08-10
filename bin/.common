@@ -42,14 +42,6 @@ print () {
   echo -e "${RND_COL}$@${NC}"
 }
 
-run_command_ () {
-  output=$("$@")
-  local cmd_exit_code=$?  # Capture the exit code of the command
-  #echo "$output" | sed -e "s/^/$(printf ${RND_COL}${APP_NAME}) | $(printf  ${NC})/"
-  echo ">> $output"
-  return $cmd_exit_code
-}
-
 run_command () {
   output=$("$@")
   local cmd_exit_code=$?
