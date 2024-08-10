@@ -134,6 +134,8 @@ SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
 
 title1 "Ready to stage ..."
 
+docker system prune -f;
+
 if [ -f "$MAKEFILE" ]; then
     title2 "Makefile found! Using it ..."
 
