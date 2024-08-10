@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x;
 
 # Define color variables
 RED='\033[0;31m'     # Red
