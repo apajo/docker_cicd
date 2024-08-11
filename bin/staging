@@ -12,11 +12,6 @@ source $SCRIPTPATH/.common
 
 print "\n${APP_NAME}: $@ ..."
 hr
-  run_command docker compose exec -it --user cicd staging sh -c "$@";
+  docker compose exec -it --user cicd staging sh -c "$@";
   exit $?
 hr
-
-
-bin/host "docker compose exec -it database bash -c 'backup.sh && cat /var/backups/digicmr/latest.sql.gz'"
-
-bin/host --service=database "backup.sh && cat /var/backups/digicmr/latest.sql.gz"
