@@ -25,18 +25,7 @@ else
 fi
 envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 
-# Start Docker daemon in the background
-#dockerd --tls=false &
-# dockerd-entrypoint.sh &
-
-dockerd-entrypoint.sh &
-
-# Wait for Docker to start
-# until docker info >/dev/null 2>&1; do
-#   sleep 1
-# done
-
 # Start SSHD in the foreground
-exec /usr/sbin/sshd -D -e
+/usr/sbin/sshd -D > /var/log/sshd.log 2>&1 &
 
-# exec  "$@"
+exec dockerd-entrypoint.sh "$@"

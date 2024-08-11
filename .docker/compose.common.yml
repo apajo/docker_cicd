@@ -21,8 +21,7 @@ services:
     extends:
       file: compose.common.yml
       service: config
-    command: /usr/sbin/sshd -D -e > /dev/stdout 2>/dev/stderr &
-#    command: dockerd-entrypoint.sh &
+#    command: /usr/sbin/sshd -D -e > /dev/stdout 2>/dev/stderr &
     env_file:
       - path: ../.env
         required: true
