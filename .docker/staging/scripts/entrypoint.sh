@@ -28,4 +28,8 @@ envsubst < /etc/docker/daemon.json.template > /etc/docker/daemon.json
 # Start SSHD in the foreground
 /usr/sbin/sshd -D > /var/log/sshd.log 2>&1 &
 
-exec dockerd-entrypoint.sh "$@"
+# Redirect logs to stdout to be captured by Docker logs
+# tail -f /var/log/dockerd.log /var/log/sshd.log &
+
+exec dockerd-entrypoint.sh > /var/log/dockerd.log 2>&1 "$@"
+

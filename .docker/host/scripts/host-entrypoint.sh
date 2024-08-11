@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 STAGING_HOST=$(echo $STAGING_SSH_DSN | cut -d'@' -f2 | cut -d':' -f1)
 STAGING_PORT=$(echo $STAGING_SSH_DSN | cut -d':' -f2)
 
@@ -36,4 +34,7 @@ ssh-keyscan ${STAGING_HOST} >> /home/cicd/.ssh/known_hosts;
 
 echo -e "\Host is ready ... \n"
 
-exec dockerd-entrypoint.sh "$@"
+# Redirect logs to stdout to be captured by Docker logs
+# tail -f /var/log/dockerd.log /var/log/sshd.log &
+
+exec dockerd-entrypoint.sh > /var/log/dockerd.log 2>&1  "$@"
