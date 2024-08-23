@@ -14,7 +14,8 @@ if [ ! -f /home/cicd/.ssh/id_rsa ]; then
 
   ssh-keygen -t rsa -b 4096g -f /home/cicd/.ssh/id_rsa -N "" -C "cicd@host"
 
-  cat /home/cicd/.ssh/id_rsa.pub >> /home/cicd/.ssh/authorized_keys
+  # cat /home/cicd/.ssh/id_rsa.pub >> /home/cicd/.ssh/authorized_keys
+  grep -qxFf /home/cicd/.ssh/id_rsa.pub /home/cicd/.ssh/authorized_keys || cat /home/cicd/.ssh/id_rsa.pub >> /home/cicd/.ssh/authorized_keys
 fi
 
 echo "Setting up known hosts..."
