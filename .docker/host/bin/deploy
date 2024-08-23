@@ -98,7 +98,7 @@ git clone --depth=1 ${GIT_REPO} --branch=${BRANCH} ${APP_ROOT} || :;
 check_command "Repository cloning"
 
 cd ${APP_ROOT} || exit;
-git fetch --all  && git pull --ff;
+git fetch --all && git pull --ff;
 check_command "Repository cloning"
 
 # Check if the git commands were successful
