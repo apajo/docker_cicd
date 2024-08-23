@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#set -e
-#set -x
+# set -e
+# set -x
 
 export APP_NAME=$(basename "$0")
 export ROOT="$(pwd)"
