@@ -24,11 +24,7 @@ NC='\033[0m' # No Color
 export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 title1 () {
-  width=$(tput cols 2>/dev/null)
-
-  if [ $? -ne 0 ]; then
-      width=30
-  fi
+  width=50
 
   line=$(printf "%${width}s" | tr ' ' '=')
   echo -e "\n${CYAN}$1${NC}"

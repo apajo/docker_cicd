@@ -11,6 +11,6 @@ wait-for-it.sh ${STAGING_HOST}:${STAGING_PORT} -t 60;
 source ssh-keys.sh
 
 echo "Wait for dockerd/contained to start..."
-sleep 10;
+sleep 15;
 
 exec "$@"

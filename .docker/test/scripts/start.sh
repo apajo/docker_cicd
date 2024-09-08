@@ -52,13 +52,13 @@ do
 
   echo "Testing / building ($version) ..."
 
-  SSH_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT} -t"
+  SSH_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT}"
   ssh ${SSH_URL} -C "stage test_repo $version";
   check_command "Staging"
 
   echo "Setting up built image ($version) ..."
 
-  SSH_URL="${PRODUCTION_USER}@${PRODUCTION_HOST} -p ${PRODUCTION_PORT} -t"
+  SSH_URL="${PRODUCTION_USER}@${PRODUCTION_HOST} -p ${PRODUCTION_PORT}"
   ssh ${SSH_URL} -C "deploy test_repo $version";
   check_command "Deploying"
 
