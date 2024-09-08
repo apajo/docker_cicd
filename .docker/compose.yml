@@ -24,7 +24,9 @@ services:
       - staging_dind_vol:/var/lib/docker
       - staging_certs:/certs
     healthcheck:
-      test: nc -z localhost 22 || exit 1
+      test: >
+        nc -z localhost 22 || exit 1;
+        docker info > /dev/null 2>&1 || exit 1
       interval: 30s
       timeout: 10s
       retries: 3
@@ -55,7 +57,9 @@ services:
       - host_dind_vol:/var/lib/docker
       - host_certs:/certs
     healthcheck:
-      test: nc -z localhost 22 || exit 1
+      test: >
+        nc -z localhost 22 || exit 1;
+        docker info > /dev/null 2>&1 || exit 1
       interval: 30s
       timeout: 10s
       retries: 5

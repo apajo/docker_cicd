@@ -1,6 +1,7 @@
 services:
   test:
     container_name: docker_cicd_test
+#    command: tail -f /dev/null
     build:
       context: ./../
       dockerfile: .docker/test/Dockerfile
