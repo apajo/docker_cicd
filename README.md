@@ -121,7 +121,7 @@ ssh cicd@production bash -c "deploy master 12345"
 
 ```shell
 docker compose -f .docker/compose.yml -f .docker/compose.test.yml run --rm --remove-orphans test;
-docker compose -f .docker/compose.yml -f .docker/compose.test.yml down
+docker compose -f .docker/compose.yml -f .docker/compose.test.yml down;
 ```
 
 ## Detailed instructions
