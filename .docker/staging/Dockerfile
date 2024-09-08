@@ -31,6 +31,13 @@ RUN adduser -g cicd -g rootless -D cicd -D docker; \
     chmod 700 /home/cicd/.ssh && chmod 600 /home/cicd/.ssh/authorized_keys && \
     usermod -p '*' -s /bin/bash cicd
 
+# Fix ownership of critical directories
+RUN chown root:root /var/empty && \
+    chmod 755 /var/empty && \
+    chown root:root /var/log && \
+    chown root:root /var/run && \
+    chown root:root /var/mail
+
 RUN passwd -u cicd; \
     ssh-keygen -A;
 
