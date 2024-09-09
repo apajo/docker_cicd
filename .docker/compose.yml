@@ -81,6 +81,7 @@ services:
         required: false
     environment:
       - REGISTRY_LOG_LEVEL=warn
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
     profiles: ["", staging]
     extra_hosts:
       - "host.docker.internal:host-gateway"

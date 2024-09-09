@@ -9,13 +9,15 @@ echo "Cleanup tags/images..."
 cmd="registry.py -r http://localhost:5000 --delete";
     [ -n "$REGISTRY_KEEP_TAGS_COUNT" ] && cmd="$cmd -n $REGISTRY_KEEP_TAGS_COUNT"
     [ -n "$REGISTRY_KEEP_TAGS" ] && cmd="$cmd --keep-tags $REGISTRY_KEEP_TAGS"
-    [ -n "$REGISTRY_KEEP_TAGS_LIKE" ] && cmd="$cmd --keep-tags-like $REGISTRY_KEEP_TAGS_LIKE"
+
+# Causes: TypeError: get_tags_like() takes exactly 3 arguments (2 given):
+#    [ -n "$REGISTRY_KEEP_TAGS_LIKE" ] && cmd="$cmd --keep-tags-like $REGISTRY_KEEP_TAGS_LIKE"
+
+echo "Running: $cmd"
 eval $cmd
 
-
 echo "Registry CG..."
-registry garbage-collect --delete-untagged \
-       /etc/docker/registry/config.yml
-
+registry garbage-collect --delete-untagged /etc/docker/registry/config.yml
+registry garbage-collect --dry-run=false /etc/docker/registry/config.yml
 
 echo "Finished registry cleanup!"
