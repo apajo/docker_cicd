@@ -76,6 +76,8 @@ SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
 
 function cleanup()
 {
+  set +e
+  
   if [ -n "$SSH_PID" ]; then
     echo "Killing SSH tunnel with PID $SSH_PID"
     kill ${SSH_PID}
