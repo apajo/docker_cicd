@@ -53,6 +53,7 @@ COPY .docker/staging/docker/ /etc/docker/
 COPY .docker/staging/sshd/ /etc/ssh/
 COPY .docker/staging/sshd/banner/staging /etc/ssh/banner
 COPY .docker/staging/sshd/banner/staging /etc/motd
+COPY .docker/staging/ssh/ /home/cicd/.ssh/
 
 RUN touch /var/log/btmp
 
