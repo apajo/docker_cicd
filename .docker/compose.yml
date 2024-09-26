@@ -20,6 +20,7 @@ services:
     volumes:
 #      - ./staging/bin/stage:/usr/local/bin/stage
       - ../env:/var/docker_cicd/env:ro
+      - /var/tests:/var/tests
       - staging_app_vol:/app
       - staging_dind_vol:/var/lib/docker
       - staging_certs:/certs
