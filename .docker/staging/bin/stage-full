@@ -9,3 +9,4 @@ source stage-common
 . stage-build
 . stage-test
 . stage-push
+. stage-finish

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+source stage-common
+
+cleanup() {
+    if [ -d "$BUILD_DIR" ]; then
+      echo "Clean up build dir ($VERSION)..."
+      [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
+    fi
+
+    if [ "$(docker image ls | grep "localhost:5000")" ]; then
+        echo "Clean up images..."
+        docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f
+    fi
+
+    docker system prune -f
+}
+
+trap cleanup EXIT

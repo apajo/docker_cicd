@@ -35,34 +35,12 @@ title2 () {
   echo -e "${BOLD_WHITE}$1${NC}"
 }
 
-
-cleanup() {
-    if [ -n "$SSH_PID" ]; then
-      echo "Killing SSH tunnel with PID $SSH_PID"
-      kill ${SSH_PID}
-    fi
-
-    if [ -d "$BUILD_DIR" ]; then
-      echo "Clean up build dir ($VERSION)..."
-      [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
-    fi
-
-    if [ "$(docker image ls | grep "localhost:5000")" ]; then
-        echo "Clean up images..."
-        docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f
-    fi
-
-    docker system prune -f
-}
-
 check_command() {
     if [ $? -ne 0 ]; then
         echo -e "${RED}Error: $1 failed!${NC}"
         exit 1
     fi
 }
-
-trap cleanup EXIT
 
 # Exit on missing argument
 if [ -z "$1" ]; then
