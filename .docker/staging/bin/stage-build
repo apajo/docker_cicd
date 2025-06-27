@@ -1,0 +1,22 @@
+#!/bin/bash
+
+source stage-common
+
+cd $BUILD_DIR;
+
+if [ -f "$MAKEFILE" ]; then
+    echo "Installing ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} install VERSION=$BUILD_VERSION
+    check_command "Make install"
+
+    echo "Build containers ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} build VERSION=$BUILD_VERSION
+    check_command "Make build"
+
+else
+    export VERSION=$BUILD_VERSION
+
+    docker compose build
+    check_command "Docker compose build"
+
+fi

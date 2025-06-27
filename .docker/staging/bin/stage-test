@@ -1,0 +1,17 @@
+#!/bin/bash
+source stage-common
+
+cd $BUILD_DIR;
+
+if [ -f "$MAKEFILE" ]; then
+    echo "Running test ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} test VERSION=$BUILD_VERSION
+    check_command "Make test"
+else
+    export VERSION=$BUILD_VERSION
+
+    docker compose --profile=test run --remove-orphans --rm tests;
+    check_command "Docker compose build (install profile)"
+
+    docker compose --profile=test down;
+fi

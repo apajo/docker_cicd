@@ -1,0 +1,104 @@
+#!/bin/bash
+
+# set -e;
+# set -x;
+
+# Define color variables
+RED='\033[0;31m'     # Red
+GREEN='\033[0;32m'   # Green
+YELLOW='\033[0;33m'  # Yellow
+BLUE='\033[0;34m'    # Blue
+PURPLE='\033[0;35m'  # Purple
+CYAN='\033[0;36m'    # Cyan
+WHITE='\033[0;37m'   # White
+BOLD_WHITE='\033[1;37m'  # White
+NC='\033[0m' # No Color
+
+# Description: This script is intended for pushing or deploying a specified version of the project.
+#              It checks for the required version name argument, sets up necessary environment variables,
+#              and performs deployment operations.
+# Usage: ./deploy.sh <branch> <build_name>
+#        <branch> name of the branch to be checked out
+#        <build_name> is the name of the build/tag to be deployed
+
+export SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+title1 () {
+  width=50
+
+  line=$(printf "%${width}s" | tr ' ' '=')
+  echo -e "\n${CYAN}$1${NC}"
+  echo -e "${CYAN}$line${NC}"
+}
+
+title2 () {
+  echo -e "${BOLD_WHITE}$1${NC}"
+}
+
+
+cleanup() {
+    if [ -n "$SSH_PID" ]; then
+      echo "Killing SSH tunnel with PID $SSH_PID"
+      kill ${SSH_PID}
+    fi
+
+    if [ -d "$BUILD_DIR" ]; then
+      echo "Clean up build dir ($VERSION)..."
+      [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
+    fi
+
+    if [ "$(docker image ls | grep "localhost:5000")" ]; then
+        echo "Clean up images..."
+        docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f
+    fi
+
+    docker system prune -f
+}
+
+check_command() {
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Error: $1 failed!${NC}"
+        exit 1
+    fi
+}
+
+trap cleanup EXIT
+
+# Exit on missing argument
+if [ -z "$1" ]; then
+    echo -e "${RED}Error: Branch name is missing!${NC}"
+    exit 1
+fi
+
+# Exit on missing argument
+if [ -z "$2" ]; then
+    echo -e "${RED}Error: Build name is missing!${NC}"
+    exit 1
+fi
+
+# ENVIRONMENT VARS
+export ROOT="$(pwd)"
+[ -f $ROOT/.env ] && (set -o allexport; source $ROOT/.env; set +o allexport)
+[ -f $ROOT/.env.local ] && (set -o allexport; source $ROOT/.env.local; set +o allexport)
+
+. /etc/profile
+
+STAGING_USER=$(echo $STAGING_SSH_DSN | cut -d'@' -f1)
+STAGING_HOST=$(echo $STAGING_SSH_DSN | cut -d'@' -f2 | cut -d':' -f1)
+STAGING_PORT=$(echo $STAGING_SSH_DSN | cut -d':' -f2)
+
+BUILD_ROOT=/app/build
+BRANCH=$1
+BUILD_VERSION=$2
+export VERSION=$BRANCH\_$BUILD_VERSION
+BUILD_DIR=$BUILD_ROOT/$VERSION
+MAKEFILE=${MAKE_FILE:-Makefile.cicd}
+STAGING_URL="${STAGING_USER}@staging"
+SSH_TUNNEL="-L 5000:registry:5000 $STAGING_URL"
+
+
+title1 "Running $0 ..."
+title2 "Makefile: $MAKEFILE"
+title2 "Branch name: $BRANCH"
+title2 "Build name: $BUILD_VERSION"
+title2 "Build directory: $BUILD_DIR"

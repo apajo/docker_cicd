@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# set -e;
+# set -x;
+
+source stage-common
+
+. stage-prepare
+. stage-build
+. stage-test
+. stage-push

@@ -82,6 +82,6 @@ RUN ln -s /app/build /home/cicd/build; \
     ln -s /var/backups/digicmr /home/cicd/backups;
 
 # Staging specific scripts
-COPY --chmod=a-w+x --chown=cicd:cicd .docker/staging/bin/ /usr/local/bin
+COPY --chown=cicd:cicd .docker/staging/bin/ /usr/local/bin
 
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]

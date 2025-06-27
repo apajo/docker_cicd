@@ -53,7 +53,7 @@ do
   echo "Testing / building ($version) ..."
 
   SSH_URL="${STAGING_USER}@${STAGING_HOST} -p ${STAGING_PORT}"
-  ssh ${SSH_URL} -C "stage test_repo $version";
+  ssh ${SSH_URL} -C "stage-full test_repo $version";
   check_command "Staging"
 
   echo "Setting up built image ($version) ..."

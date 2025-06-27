@@ -1,0 +1,25 @@
+#!/bin/bash
+
+source stage-common
+
+cd $BUILD_DIR;
+
+ssh-keyscan staging >> /home/cicd/.ssh/known_hosts
+
+title1 "Creating registry tunnel ..."
+echo "ssh $SSH_TUNNEL -N -f"
+
+ssh $SSH_TUNNEL -N -f
+check_command "Creating SSH tunnel"
+
+SSH_PID=$(pgrep -f "ssh $SSH_TUNNEL")
+
+
+if [ -f "$MAKEFILE" ]; then
+    echo "Pushing/saving containers ($BUILD_VERSION@$BRANCH) ..."
+    make -f ${MAKEFILE} push VERSION=$BUILD_VERSION
+    check_command "Make push"
+else
+    docker compose push --quiet
+    check_command "Docker compose push"
+fi
