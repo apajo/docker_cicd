@@ -8,6 +8,11 @@ cleanup() {
       [ ! -z "$BUILD_VERSION" ] && [ -d "$BUILD_DIR" ] && rm -rf "$BUILD_DIR" || :
     fi
 
+    if [ -d "$BUILD_ROOT" ]; then
+      echo "Removing stale build directories in $BUILD_ROOT ..."
+      find "$BUILD_ROOT_REAL" -mindepth 1 -mmin +1440 -exec rm -rf {} +
+    fi
+
     if [ "$(docker image ls | grep "localhost:5000")" ]; then
         echo "Clean up images..."
         docker image ls | grep "localhost:5000" | awk '{print $3}' | xargs docker rmi -f
